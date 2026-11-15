@@ -23,8 +23,8 @@ def good_printed(iban, amount=4_500_000_000, tracking="123456789012", date="1405
     return out
 
 
-def run(cands, settings, now, lines=(), flags=(), strip=True):
-    hints = Hints(transfer_votes={}, status_votes={}, printed_strip_found=strip)
+def run(cands, settings, now, lines=(), flags=()):
+    hints = Hints(transfer_votes={}, status_votes={})
     fields, warnings = resolve(list(cands), hints, settings, now)
     matches, best, route, q, warnings = decide(fields, warnings, list(lines), settings.name_match_threshold,
                                                list(flags))

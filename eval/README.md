@@ -50,6 +50,11 @@ eval/real/
 * Use `null` for a field that is genuinely not on the receipt (the reader should return `null` too).
   Leave a key out if you did not label it.
 * `dest_iban`: the full IBAN, or the visible part as `"...8550"` when the receipt only shows the end.
+* `reference_numbers`: every tracking/reference number with its label, e.g.
+  `{"شماره پیگیری": "381946", "شماره ارجاع": "71234598765"}`. A number read under its own label is
+  scored correct even if it is not the primary `tracking_number`.
+* `sender` / `receiver`: `{"name": …, "card": "4821" (last 4), "account": "…", "bank": "Pasargad"}` —
+  only the keys that are visible on the receipt.
 * `sources`: where the *correct* value is on the document (`printed` / `handwritten` / `digital`) —
   used for the source-confusion table.
 * `expected_lines` / `correct_line_id`: what the bot would have sent and which line the receipt

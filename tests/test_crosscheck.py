@@ -1,5 +1,5 @@
 from .conftest import IBAN_MELLAT, IBAN_MELLI
-from .helpers import C, good_printed, run
+from .helpers import C, good_printed, line, run
 
 
 def test_two_agreeing_printed_reads_are_high(settings, now):
@@ -37,13 +37,39 @@ def test_real_failure_handwritten_vs_words_is_conflict(settings, now):
     assert route == "manager_review"
 
 
-def test_printed_beats_handwritten(settings, now):
+def test_any_amount_disagreement_is_conflict_even_if_printed_looks_right(settings, now):
+    """Owner decision: a conflicting amount always goes to a manager; printed is only a suggestion."""
     cands = good_printed(IBAN_MELLAT, amount=4_500_000_000)
     cands.append(C("amount", 15_000_000_000, source="handwritten", engine="b"))
-    f, _, _, _, _, warnings = run(cands, settings, now)
-    assert f.amount_rial.value == 4_500_000_000
-    assert f.amount_rial.confidence == "high"
+    f, _, best, route, _, warnings = run(cands, settings, now,
+                                         lines=[line("L-17", IBAN_MELLAT, 450_000_000)])
+    assert f.amount_rial.value is None and f.amount_rial.confidence == "conflict"
+    assert f.amount_rial.suggested_value == 4_500_000_000 and f.amount_rial.suggestion_basis
+    assert len(f.amount_rial.candidates) == 3  # every reading kept with its evidence
+    assert {c["source"] for c in f.amount_rial.candidates} == {"printed", "handwritten"}
     assert "HANDWRITTEN_AMOUNT_DISAGREES" in warnings and "AMOUNT_CONFLICT" in warnings
+    assert route == "manager_review"
+
+
+def test_same_engine_two_passes_is_one_source(settings, now):
+    """Owner decision: full page + zoomed strip of ONE engine are not independent."""
+    cands = [C("amount", 450_000_000, engine="a", pass_id="full", currency="rial"),
+             C("amount", 450_000_000, engine="a", pass_id="strip", currency="rial"),
+             C("tracking_number", "123456789", engine="a", pass_id="full", label="شماره پیگیری"),
+             C("tracking_number", "123456789", engine="a", pass_id="strip", label="شماره پیگیری"),
+             C("paid_at", "1405/08/24 11:42", engine="a", pass_id="full"),
+             C("paid_at", "1405/08/24 11:42", engine="a", pass_id="strip")]
+    f, *_ = run(cands, settings, now)
+    assert f.amount_rial.confidence == "medium"
+    assert f.tracking_number.confidence == "medium"
+    assert f.paid_at.confidence == "medium"
+
+
+def test_words_disagreeing_with_two_printed_reads_is_conflict(settings, now):
+    cands = [C("amount", 450_000_000, engine="a", currency="rial"), C("amount", 450_000_000, engine="b", currency="rial"),
+             C("amount", 460_000_000, source="words", engine="a", currency="rial")]
+    f, *_ = run(cands, settings, now)
+    assert f.amount_rial.confidence == "conflict" and f.amount_rial.suggested_value == 450_000_000
 
 
 def test_two_printed_amounts_disagree(settings, now):
@@ -108,7 +134,7 @@ def test_partial_iban(settings, now):
 
 
 def test_bank_name_mismatch_caps_confidence(settings, now):
-    cands = [C("iban", IBAN_MELLAT, role="dest"), C("dest_bank_name", "017")]
+    cands = [C("iban", IBAN_MELLAT, role="dest"), C("receiver_bank", "017")]
     f, _, _, _, _, warnings = run(cands, settings, now)
     assert "BANK_NAME_MISMATCH" in warnings
     assert f.dest_iban.confidence == "medium"

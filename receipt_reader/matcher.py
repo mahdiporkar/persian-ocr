@@ -20,7 +20,8 @@ W_NAME = 0.10
 
 # warnings that always send a receipt to a human
 MANAGER_WARNINGS = {
-    "MULTIPLE_AMOUNTS", "UNKNOWN_CURRENCY", "IBAN_MISMATCH", "NO_MATCHING_LINE",
+    # any amount disagreement goes to a human, even when the printed amount looks more reliable
+    "AMOUNT_CONFLICT", "HANDWRITTEN_AMOUNT_DISAGREES", "MULTIPLE_AMOUNTS", "UNKNOWN_CURRENCY", "IBAN_MISMATCH", "NO_MATCHING_LINE",
     "AMBIGUOUS_MATCH", "STATUS_NOT_SUCCESS", "POSSIBLE_EDITING", "IBAN_CONFLICT",
     "DATE_CONFLICT", "TRACKING_CONFLICT", "AMOUNT_CONFLICT_UNRESOLVED", "NO_EXPECTED_LINES",
 }
@@ -90,8 +91,8 @@ def score_line(fields: Fields, line: ExpectedLine, name_threshold: int) -> LineM
             reasons.append("IBAN_MISMATCH")
 
     # ---- name (informational, small weight) ----
-    if line.holder_name and fields.dest_holder_name.value:
-        r = fuzz.token_sort_ratio(normalize_name(line.holder_name), normalize_name(fields.dest_holder_name.value))
+    if line.holder_name and fields.receiver.name.value:
+        r = fuzz.token_sort_ratio(normalize_name(line.holder_name), normalize_name(fields.receiver.name.value))
         if r >= name_threshold:
             reasons.append("NAME_MATCH")
             score += W_NAME

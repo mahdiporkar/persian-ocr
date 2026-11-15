@@ -42,21 +42,15 @@ def test_satna_form_printed_strip_beats_handwriting(reader):
     res = reader.read(img, LINES, now=NOW, include_debug=True)
     f = res.fields
     assert res.debug["printed_strip_box"] is not None
-    assert f.amount_rial.value == 4_500_000_000
-    assert f.amount_toman == 450_000_000
+    # owner decision: the disagreement is a conflict -> manager review; printed is only suggested
+    assert f.amount_rial.value is None and f.amount_rial.confidence == "conflict"
+    assert f.amount_rial.suggested_value == 4_500_000_000
+    assert res.suggested_route == "manager_review"
     assert "HANDWRITTEN_AMOUNT_DISAGREES" in res.warnings
     assert any(c["value"] == 15_000_000_000 and c["source"] == "handwritten" for c in f.amount_rial.candidates)
     assert f.dest_iban.value == IBAN_MELLAT and f.dest_iban.checksum_valid
     assert f.paid_at.jalali == "1405/08/24 11:42"
-    assert res.best_line_id == "L-17"
-    # "match" only when every required field is high; a disagreement between the two
-    # strip reads (e.g. the tracking number) must send it to a human instead.
-    if res.suggested_route == "match":
-        assert all(getattr(f, k).confidence == "high" for k in ("amount_rial", "dest_iban", "paid_at",
-                                                                  "tracking_number"))
-    else:
-        assert any(getattr(f, k).confidence != "high" for k in ("amount_rial", "dest_iban", "paid_at",
-                                                                  "tracking_number"))
+    assert res.best_line_id is None  # no amount -> no line is picked
 
 
 def test_satna_without_strip_handwriting_only(reader):

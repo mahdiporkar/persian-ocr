@@ -1,4 +1,11 @@
-"""End-to-end: image bytes -> blind read -> cross-check -> match -> route."""
+"""Two independent steps:
+
+1. extract(): image bytes -> blind read by every engine -> cross-check -> Extraction.
+   It takes NO expected values; nothing about the debtor's lines can influence it.
+2. match(): Extraction + expected lines -> line scores + suggested route.
+
+read() = extract() then match().
+"""
 from __future__ import annotations
 
 import logging
@@ -14,7 +21,7 @@ from .dates import TEHRAN
 from .engines.base import Engine, EngineOutput
 from .imaging import load_image, prepare
 from .matcher import decide
-from .schema import Candidate, ExpectedLine, ImageInfo, ReadResponse
+from .schema import Candidate, ExpectedLine, Extraction, ImageInfo, ReadResponse
 
 log = logging.getLogger("receipt_reader.pipeline")
 
@@ -32,9 +39,9 @@ class ReceiptReader:
         self.status = {name: e.available() for name, e in self.engines.items()}
         return self.status
 
-    def read(self, data: bytes, expected_lines: list[ExpectedLine], engines: Optional[list[str]] = None,
-             include_debug: bool = False, request_id: Optional[str] = None,
-             now: Optional[datetime] = None) -> ReadResponse:
+    # ------------------------------------------------------------- step 1
+    def extract(self, data: bytes, engines: Optional[list[str]] = None, include_debug: bool = False,
+                request_id: Optional[str] = None, now: Optional[datetime] = None) -> Extraction:
         t0 = time.perf_counter()
         now = now or datetime.now(TEHRAN)
         request_id = request_id or str(uuid.uuid4())
@@ -71,10 +78,7 @@ class ReceiptReader:
                 log.warning("engine %s failed: %s", name, e.__class__.__name__)
 
         cands: list[Candidate] = [c for o in outputs for c in o.candidates]
-        hints = Hints(transfer_votes={}, status_votes={},
-                      printed_strip_found=prep.strip_box is not None
-                      or any(o.printed_strip_box for o in outputs)
-                      or any(c.pass_id == "strip" for c in cands))
+        hints = Hints(transfer_votes={}, status_votes={})
         for o in outputs:
             for k, v in o.transfer_votes.items():
                 hints.transfer_votes[k] = hints.transfer_votes.get(k, 0) + v
@@ -86,19 +90,13 @@ class ReceiptReader:
         flags = list(loaded.flags)
         if any(o.suspected_editing for o in outputs):
             flags.append("VLM_SUSPECTED_EDITING")
-        image_flags = list(flags)
         if EDIT_FLAGS & set(flags):
-            image_flags.append("POSSIBLE_EDITING")
+            warnings.append("POSSIBLE_EDITING")
         if prep.quality:
             warnings.append("LOW_IMAGE_QUALITY")
             flags += prep.quality
         if not outputs:
             warnings.append("NO_ENGINE_AVAILABLE")
-
-        matches, best, route, question, warnings = decide(
-            fields, warnings, expected_lines, self.s.name_match_threshold, image_flags)
-        if not outputs:
-            route, question = "manager_review", None
 
         debug = None
         if include_debug:
@@ -110,20 +108,38 @@ class ReceiptReader:
                 "quality": prep.quality,
                 "engines": {o.engine: o.debug for o in outputs},
             }
-
-        return ReadResponse(
+        return Extraction(
             receipt_id=str(uuid.uuid4()),
             request_id=request_id,
             image=ImageInfo(sha256=loaded.sha256, phash=loaded.phash, width=loaded.pil.width,
                             height=loaded.pil.height, format=loaded.format, kind=loaded.kind, flags=flags),
             fields=fields,
             tracking_number_normalized=fields.tracking_number.value,
-            matches=matches,
-            best_line_id=best,
-            suggested_route=route,
-            sender_question_fa=question,
             warnings=warnings,
             engines=engine_report,
             processing_ms=int((time.perf_counter() - t0) * 1000),
             debug=debug,
         )
+
+    # ------------------------------------------------------------- step 2
+    def match(self, ext: Extraction, expected_lines: list[ExpectedLine]) -> ReadResponse:
+        t0 = time.perf_counter()
+        image_flags = ["POSSIBLE_EDITING"] if "POSSIBLE_EDITING" in ext.warnings else []
+        matches, best, route, question, warnings = decide(
+            ext.fields, list(ext.warnings), expected_lines, self.s.name_match_threshold, image_flags)
+        if "NO_ENGINE_AVAILABLE" in warnings:
+            route, question = "manager_review", None
+        return ReadResponse(
+            **ext.model_dump(exclude={"warnings", "processing_ms"}),
+            warnings=warnings,
+            processing_ms=ext.processing_ms + int((time.perf_counter() - t0) * 1000),
+            matches=matches,
+            best_line_id=best,
+            suggested_route=route,
+            sender_question_fa=question,
+        )
+
+    def read(self, data: bytes, expected_lines: list[ExpectedLine], engines: Optional[list[str]] = None,
+             include_debug: bool = False, request_id: Optional[str] = None,
+             now: Optional[datetime] = None) -> ReadResponse:
+        return self.match(self.extract(data, engines, include_debug, request_id, now), expected_lines)

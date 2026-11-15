@@ -35,8 +35,9 @@ from .base import Engine, EngineOutput
 
 log = logging.getLogger("receipt_reader.vlm")
 
-FIELDS = ["amount", "amount_words", "iban", "paid_at", "tracking_number", "dest_holder_name",
-          "source_name", "source_account", "dest_bank_name", "card_number"]
+FIELDS = ["amount", "amount_words", "iban", "paid_at", "tracking_number",
+          "sender_name", "sender_account", "sender_card", "sender_bank",
+          "receiver_name", "receiver_account", "receiver_card", "receiver_bank"]
 
 _NULLABLE_STR = {"type": ["string", "null"]}
 _BOX = {"type": ["array", "null"], "items": {"type": "integer"}}
@@ -88,10 +89,11 @@ Transcribe — do not interpret or correct. Report every reading you can see for
 - paid_at: the transaction date and time as printed (تاریخ / ساعت), copied exactly.
 - tracking_number: every tracking/reference number (شماره پیگیری، کد پیگیری، شماره مرجع، کد رهگیری)
   with its label copied into `label`. Account numbers and card numbers are NOT tracking numbers.
-- dest_holder_name / source_name: account holder names.
-- source_account: the payer's account number if shown.
-- dest_bank_name: the destination bank's name if written next to the destination account.
-- card_number: card numbers, if any.
+- sender_* = the payer side (از حساب، از کارت، مبدا، برداشت از، واریز کننده);
+  receiver_* = the payee side (به حساب، به کارت، مقصد، واریز به، ذینفع، دارنده کارت).
+  sender_name / receiver_name: holder names; sender_account / receiver_account: account numbers
+  (not IBANs); sender_card / receiver_card: card numbers exactly as printed, masked digits as 'x';
+  sender_bank / receiver_bank: bank names written for that side. Only report what is visible.
 
 If the same field appears more than once (e.g. handwritten on the form AND printed on the teller
 strip), report EACH occurrence as a separate reading. Never merge or choose between them.
@@ -106,7 +108,8 @@ If a character is unreadable, write '?' in its place rather than guessing.
 
 Also report: document_kind, transfer_type (satna/paya/internal/card_to_card/unknown),
 document_status (success/failed/pending/unknown — only from explicit words such as موفق / ناموفق /
-در انتظار; a teller's printed strip alone counts as unknown), whether a machine-printed teller strip
+در انتظار / ثبت شده; a teller's printed strip or a tracking number alone counts as unknown),
+whether a machine-printed teller strip
 or stamp is present and its box, and suspected_editing=true only for clear visual signs of digital
 editing (mismatched fonts in one line, pasted digits, misaligned background).
 """
@@ -335,11 +338,17 @@ def reading_to_candidates(r: dict, engine: str, pass_id: str, size, default_src:
         if not (5 <= len(d) <= 30):
             return []
         return [Candidate(field="tracking_number", value=d, source=src, **common)]
-    if field in ("dest_holder_name", "source_name", "source_account"):
-        return [Candidate(field=field, value=raw, source=src,
-                          role="dest" if field == "dest_holder_name" else "source", **common)]
-    if field == "dest_bank_name":
+    side_role = "dest" if field.startswith("receiver_") else "source"
+    if field in ("sender_name", "receiver_name"):
+        return [Candidate(field=field, value=raw, source=src, role=side_role, **common)]
+    if field in ("sender_account", "receiver_account"):
+        d = digits_only(raw)
+        return [Candidate(field=field, value=d, source=src, role=side_role, **common)] if len(d) >= 6 else []
+    if field in ("sender_card", "receiver_card"):
+        d = digits_only(raw)
+        return [Candidate(field=field, value=raw, source=src, role=side_role, **common)] if len(d) >= 4 else []
+    if field in ("sender_bank", "receiver_bank"):
         from ..iban import detect_bank_names
-        return [Candidate(field="dest_bank_name", value=code, source=src, **common)
+        return [Candidate(field=field, value=code, source=src, role=side_role, **common)
                 for code in detect_bank_names(raw)]
     return []

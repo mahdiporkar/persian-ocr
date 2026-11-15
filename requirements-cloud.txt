@@ -1,0 +1,3 @@
+-r requirements.txt
+# optional cloud VLM provider (images leave the server only with RR_ALLOW_CLOUD_VLM=true)
+anthropic>=2.0

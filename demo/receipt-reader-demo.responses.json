@@ -1,0 +1,2011 @@
+{
+  "failed_screenshot.png": {
+    "receipt_id": "4e953e93-4da5-4176-92a6-7eed5155f34d",
+    "request_id": "246bb94f-d0e7-4c47-832d-53b17848b4a3",
+    "image": {
+      "sha256": "c1fc93cbf09a13133dcb6daced85d6fab1a1627bbf41ccacb3fd6b803d4c4015",
+      "phash": "9e1a60614f4f6337",
+      "width": 1080,
+      "height": 1920,
+      "format": "PNG",
+      "kind": "screenshot",
+      "flags": [
+        "SCREENSHOT_OF_SCREENSHOT"
+      ]
+    },
+    "fields": {
+      "amount_rial": {
+        "value": 4500000000,
+        "confidence": "high",
+        "suggested_value": null,
+        "suggestion_basis": null,
+        "candidates": [
+          {
+            "value": 4500000000,
+            "source": "digital",
+            "engine": "tesseract",
+            "raw_text": "4,500,000,000",
+            "label": "مبلغ",
+            "region": [
+              91,
+              520,
+              1418,
+              56
+            ]
+          },
+          {
+            "value": 4500000000,
+            "source": "digital",
+            "engine": "easyocr",
+            "raw_text": "4,500,000,000",
+            "label": "مبلغ",
+            "currency": "rial",
+            "region": [
+              80,
+              509,
+              1443,
+              80
+            ]
+          }
+        ]
+      },
+      "currency": "rial",
+      "amount_toman": 450000000,
+      "dest_iban": {
+        "value": "IR440120000000001234568550",
+        "partial": false,
+        "checksum_valid": true,
+        "bank": "Mellat",
+        "bank_fa": "ملت",
+        "confidence": "high",
+        "candidates": [
+          {
+            "value": "IR440120000000001234568550",
+            "source": "digital",
+            "engine": "tesseract",
+            "raw_text": "IR440120000000001234568550",
+            "role": "unknown",
+            "region": [
+              91,
+              712,
+              1417,
+              54
+            ]
+          },
+          {
+            "value": "IR440120000000001234568550",
+            "source": "digital",
+            "engine": "easyocr",
+            "raw_text": "440120000000001234568550",
+            "role": "dest",
+            "region": [
+              81,
+              703,
+              1439,
+              68
+            ]
+          }
+        ]
+      },
+      "paid_at": {
+        "jalali": "1405/08/24 09:15",
+        "iso": "2026-11-15T09:15:00+03:30",
+        "plausible": true,
+        "confidence": "high",
+        "candidates": [
+          {
+            "value": "1405/08/24 09:15",
+            "source": "digital",
+            "engine": "tesseract",
+            "raw_text": "1405/08/24 09:15",
+            "region": [
+              95,
+              1290,
+              1413,
+              56
+            ]
+          },
+          {
+            "value": "1405/08/24 09:15",
+            "source": "digital",
+            "engine": "easyocr",
+            "raw_text": "1405/08/24 09:15",
+            "region": [
+              84,
+              1278,
+              1439,
+              80
+            ]
+          }
+        ]
+      },
+      "tracking_number": {
+        "value": "987654321012",
+        "label": "شماره پیگیری",
+        "all": [
+          {
+            "value": "987654321012",
+            "label": "شماره پیگیری"
+          }
+        ],
+        "confidence": "high",
+        "candidates": [
+          {
+            "value": "987654321012",
+            "source": "digital",
+            "engine": "tesseract",
+            "raw_text": "987654321012",
+            "label": "شماره پیگیری",
+            "region": [
+              91,
+              1093,
+              1417,
+              61
+            ]
+          },
+          {
+            "value": "987654321012",
+            "source": "digital",
+            "engine": "easyocr",
+            "raw_text": "987654321012",
+            "label": "شماره پیگیری",
+            "region": [
+              83,
+              1080,
+              1436,
+              85
+            ]
+          }
+        ]
+      },
+      "transfer_type": "paya",
+      "document_status": "failed",
+      "dest_bank": "Mellat",
+      "sender": {
+        "name": {
+          "value": null,
+          "confidence": "low",
+          "candidates": []
+        },
+        "account": {
+          "value": null,
+          "confidence": "low",
+          "candidates": []
+        },
+        "card": {
+          "value": null,
+          "confidence": "low",
+          "candidates": []
+        },
+        "iban": {
+          "value": null,
+          "confidence": "low",
+          "candidates": []
+        },
+        "bank": {
+          "value": null,
+          "confidence": "low",
+          "candidates": []
+        }
+      },
+      "receiver": {
+        "name": {
+          "value": "مریم حسینی",
+          "confidence": "high",
+          "candidates": [
+            {
+              "value": "مریم حسینی",
+              "source": "digital",
+              "engine": "tesseract",
+              "raw_text": "مریم حسینی",
+              "role": "dest",
+              "region": [
+                91,
+                905,
+                1417,
+                57
+              ]
+            },
+            {
+              "value": "مریم حسینی",
+              "source": "digital",
+              "engine": "easyocr",
+              "raw_text": "مریم حسینی",
+              "role": "dest",
+              "region": [
+                81,
+                895,
+                1438,
+                78
+              ]
+            }
+          ]
+        },
+        "account": {
+          "value": null,
+          "confidence": "low",
+          "candidates": []
+        },
+        "card": {
+          "value": null,
+          "confidence": "low",
+          "candidates": []
+        },
+        "iban": {
+          "value": "IR440120000000001234568550",
+          "confidence": "high",
+          "candidates": []
+        },
+        "bank": {
+          "value": null,
+          "confidence": "low",
+          "candidates": []
+        }
+      },
+      "amount_words": {
+        "value": null,
+        "confidence": "low",
+        "candidates": []
+      }
+    },
+    "tracking_number_normalized": "987654321012",
+    "settlement": {
+      "confirmed_by_this_service": false,
+      "note": "Settlement must be confirmed outside this service (by the receiver / bank statement). document_status only reports what the document says."
+    },
+    "warnings": [
+      "STATUS_NOT_SUCCESS"
+    ],
+    "engines": {
+      "vlm": "skipped: no VLM provider configured (RR_VLM_PROVIDER)",
+      "tesseract": "ok",
+      "easyocr": "ok"
+    },
+    "processing_ms": 20151,
+    "debug": null,
+    "matches": [
+      {
+        "line_id": "L-17",
+        "score": 0.9,
+        "fits": true,
+        "reasons": [
+          "AMOUNT_EXACT",
+          "IBAN_FULL_MATCH",
+          "NAME_MISMATCH"
+        ],
+        "currency_assumed": null
+      },
+      {
+        "line_id": "L-18",
+        "score": 0.05,
+        "fits": false,
+        "reasons": [
+          "AMOUNT_OVER_REMAINING",
+          "IBAN_MISMATCH",
+          "NAME_MISMATCH"
+        ],
+        "currency_assumed": null
+      }
+    ],
+    "best_line_id": "L-17",
+    "suggested_route": "manager_review",
+    "sender_question_fa": null
+  },
+  "paya_screenshot.png": {
+    "receipt_id": "f445881c-af84-4c43-a9c5-df81b77d39c5",
+    "request_id": "95784fa9-aa55-4c16-8491-2d4ffbcdc0ed",
+    "image": {
+      "sha256": "6081ff19c3106bcddc5feec4d59cf25e221830d4d2c814b045e2343995a36a1b",
+      "phash": "9e1e60614f4f6333",
+      "width": 1080,
+      "height": 1920,
+      "format": "PNG",
+      "kind": "screenshot",
+      "flags": [
+        "SCREENSHOT_OF_SCREENSHOT"
+      ]
+    },
+    "fields": {
+      "amount_rial": {
+        "value": 2000000000,
+        "confidence": "high",
+        "suggested_value": null,
+        "suggestion_basis": null,
+        "candidates": [
+          {
+            "value": 2000000000,
+            "source": "digital",
+            "engine": "tesseract",
+            "raw_text": "2,000,000,000",
+            "label": "مبلغ",
+            "region": [
+              91,
+              520,
+              1418,
+              56
+            ]
+          },
+          {
+            "value": 2000000000,
+            "source": "digital",
+            "engine": "easyocr",
+            "raw_text": "2,000,000,000",
+            "label": "مبلغ",
+            "currency": "rial",
+            "region": [
+              82,
+              509,
+              1441,
+              80
+            ]
+          }
+        ]
+      },
+      "currency": "rial",
+      "amount_toman": 200000000,
+      "dest_iban": {
+        "value": "IR710170000000003456781234",
+        "partial": false,
+        "checksum_valid": true,
+        "bank": "Melli",
+        "bank_fa": "ملی",
+        "confidence": "high",
+        "candidates": [
+          {
+            "value": "IR710170000000003456781234",
+            "source": "digital",
+            "engine": "tesseract",
+            "raw_text": "IR710170000000003456781234",
+            "role": "unknown",
+            "region": [
+              91,
+              712,
+              1417,
+              54
+            ]
+          },
+          {
+            "value": "IR710170000000003456781234",
+            "source": "digital",
+            "engine": "easyocr",
+            "raw_text": "IR710170000000003456781234",
+            "role": "dest",
+            "region": [
+              81,
+              703,
+              1439,
+              68
+            ]
+          }
+        ]
+      },
+      "paid_at": {
+        "jalali": "1405/08/24 09:15",
+        "iso": "2026-11-15T09:15:00+03:30",
+        "plausible": true,
+        "confidence": "high",
+        "candidates": [
+          {
+            "value": "1405/08/24 09:15",
+            "source": "digital",
+            "engine": "tesseract",
+            "raw_text": "1405/08/24 09:15",
+            "region": [
+              95,
+              1290,
+              1413,
+              56
+            ]
+          },
+          {
+            "value": "1405/08/24 09:15",
+            "source": "digital",
+            "engine": "easyocr",
+            "raw_text": "1405/08/24 09:15",
+            "region": [
+              84,
+              1278,
+              1439,
+              80
+            ]
+          }
+        ]
+      },
+      "tracking_number": {
+        "value": "987654321012",
+        "label": "شماره پیگیری",
+        "all": [
+          {
+            "value": "987654321012",
+            "label": "شماره پیگیری"
+          }
+        ],
+        "confidence": "high",
+        "candidates": [
+          {
+            "value": "987654321012",
+            "source": "digital",
+            "engine": "tesseract",
+            "raw_text": "987654321012",
+            "label": "شماره پیگیری",
+            "region": [
+              91,
+              1093,
+              1417,
+              61
+            ]
+          },
+          {
+            "value": "987654321012",
+            "source": "digital",
+            "engine": "easyocr",
+            "raw_text": "987654321012",
+            "label": "شماره پیگیری",
+            "region": [
+              83,
+              1080,
+              1436,
+              85
+            ]
+          }
+        ]
+      },
+      "transfer_type": "paya",
+      "document_status": "success",
+      "dest_bank": "Melli",
+      "sender": {
+        "name": {
+          "value": null,
+          "confidence": "low",
+          "candidates": []
+        },
+        "account": {
+          "value": null,
+          "confidence": "low",
+          "candidates": []
+        },
+        "card": {
+          "value": null,
+          "confidence": "low",
+          "candidates": []
+        },
+        "iban": {
+          "value": null,
+          "confidence": "low",
+          "candidates": []
+        },
+        "bank": {
+          "value": null,
+          "confidence": "low",
+          "candidates": []
+        }
+      },
+      "receiver": {
+        "name": {
+          "value": "مریم حسینی",
+          "confidence": "high",
+          "candidates": [
+            {
+              "value": "مریم حسینی",
+              "source": "digital",
+              "engine": "tesseract",
+              "raw_text": "مریم حسینی",
+              "role": "dest",
+              "region": [
+                91,
+                905,
+                1417,
+                57
+              ]
+            },
+            {
+              "value": "مریم حسینی",
+              "source": "digital",
+              "engine": "easyocr",
+              "raw_text": "مریم حسینی",
+              "role": "dest",
+              "region": [
+                81,
+                895,
+                1438,
+                78
+              ]
+            }
+          ]
+        },
+        "account": {
+          "value": null,
+          "confidence": "low",
+          "candidates": []
+        },
+        "card": {
+          "value": null,
+          "confidence": "low",
+          "candidates": []
+        },
+        "iban": {
+          "value": "IR710170000000003456781234",
+          "confidence": "high",
+          "candidates": []
+        },
+        "bank": {
+          "value": null,
+          "confidence": "low",
+          "candidates": []
+        }
+      },
+      "amount_words": {
+        "value": null,
+        "confidence": "low",
+        "candidates": []
+      }
+    },
+    "tracking_number_normalized": "987654321012",
+    "settlement": {
+      "confirmed_by_this_service": false,
+      "note": "Settlement must be confirmed outside this service (by the receiver / bank statement). document_status only reports what the document says."
+    },
+    "warnings": [],
+    "engines": {
+      "vlm": "skipped: no VLM provider configured (RR_VLM_PROVIDER)",
+      "tesseract": "ok",
+      "easyocr": "ok"
+    },
+    "processing_ms": 17245,
+    "debug": null,
+    "matches": [
+      {
+        "line_id": "L-18",
+        "score": 0.9,
+        "fits": true,
+        "reasons": [
+          "AMOUNT_EXACT",
+          "IBAN_FULL_MATCH",
+          "NAME_MISMATCH"
+        ],
+        "currency_assumed": null
+      },
+      {
+        "line_id": "L-17",
+        "score": 0.3,
+        "fits": false,
+        "reasons": [
+          "AMOUNT_PARTIAL",
+          "IBAN_MISMATCH",
+          "NAME_MISMATCH"
+        ],
+        "currency_assumed": null
+      }
+    ],
+    "best_line_id": "L-18",
+    "suggested_route": "match",
+    "sender_question_fa": null
+  },
+  "satna_clean.jpg": {
+    "receipt_id": "dec555fb-b2e8-4511-8af3-1b7b389ce38f",
+    "request_id": "5c814cd4-4513-4ed8-a6b9-fcc1f490924a",
+    "image": {
+      "sha256": "d58382ae21132e173b56679b588a13dde13fbe57fdabf1d2f27fc8f0203d65e4",
+      "phash": "c16a3ed03ac46eb5",
+      "width": 2000,
+      "height": 1550,
+      "format": "JPEG",
+      "kind": "unknown",
+      "flags": []
+    },
+    "fields": {
+      "amount_rial": {
+        "value": null,
+        "confidence": "conflict",
+        "suggested_value": null,
+        "suggestion_basis": null,
+        "candidates": [
+          {
+            "value": 4500000000,
+            "source": "handwritten",
+            "engine": "tesseract",
+            "raw_text": "4,500,000,000",
+            "currency": "rial",
+            "region": [
+              1126,
+              183,
+              496,
+              38
+            ]
+          },
+          {
+            "value": 4500000000,
+            "source": "printed",
+            "engine": "tesseract",
+            "raw_text": "4,500,000,000",
+            "label": "مبلغ",
+            "currency": "rial",
+            "region": [
+              1057,
+              908,
+              495,
+              31
+            ]
+          },
+          {
+            "value": 4500000000,
+            "source": "printed",
+            "engine": "tesseract",
+            "raw_text": "4,500,000,000",
+            "pass": "strip",
+            "label": "مبلغ",
+            "currency": "rial",
+            "region": [
+              1056,
+              908,
+              496,
+              31
+            ]
+          },
+          {
+            "value": 4500000000,
+            "source": "handwritten",
+            "engine": "easyocr",
+            "raw_text": "4,500,000,000",
+            "label": "مبلغ به ریال",
+            "currency": "rial",
+            "region": [
+              1120,
+              176,
+              510,
+              56
+            ]
+          },
+          {
+            "value": 4500000000,
+            "source": "printed",
+            "engine": "easyocr",
+            "raw_text": "4,500,000,000",
+            "label": "مبلغ ریال",
+            "currency": "rial",
+            "region": [
+              1051,
+              903,
+              510,
+              43
+            ]
+          },
+          {
+            "value": 500000000,
+            "source": "printed",
+            "engine": "easyocr",
+            "raw_text": "500,000,000",
+            "pass": "strip",
+            "label": "مبلغ",
+            "currency": "rial",
+            "region": [
+              1046,
+              899,
+              515,
+              46
+            ]
+          }
+        ]
+      },
+      "currency": "rial",
+      "amount_toman": null,
+      "dest_iban": {
+        "value": "IR440120000000001234568550",
+        "partial": false,
+        "checksum_valid": true,
+        "bank": "Mellat",
+        "bank_fa": "ملت",
+        "confidence": "high",
+        "candidates": [
+          {
+            "value": "IR440120000000001234568550",
+            "source": "handwritten",
+            "engine": "tesseract",
+            "raw_text": "IR440120000000001234568550",
+            "role": "dest",
+            "region": [
+              733,
+              373,
+              887,
+              32
+            ]
+          },
+          {
+            "value": "IR440120000000001234568550",
+            "source": "printed",
+            "engine": "tesseract",
+            "raw_text": "IR440120000000001234568550",
+            "role": "dest",
+            "region": [
+              818,
+              1060,
+              733,
+              29
+            ]
+          },
+          {
+            "value": "IR440120000000001234568550",
+            "source": "printed",
+            "engine": "tesseract",
+            "raw_text": "440120000000001234568550",
+            "pass": "strip",
+            "role": "dest",
+            "region": [
+              817,
+              1060,
+              734,
+              29
+            ]
+          },
+          {
+            "value": "IR440120000000001234568550",
+            "source": "handwritten",
+            "engine": "easyocr",
+            "raw_text": "IR440120000000001234568550",
+            "role": "dest",
+            "region": [
+              723,
+              362,
+              904,
+              54
+            ]
+          },
+          {
+            "value": "IR440120000000001234568550",
+            "source": "printed",
+            "engine": "easyocr",
+            "raw_text": "440120000000001234568550",
+            "role": "dest",
+            "region": [
+              811,
+              1053,
+              749,
+              39
+            ]
+          },
+          {
+            "value": "IR440120000000001234568550",
+            "source": "printed",
+            "engine": "easyocr",
+            "raw_text": "IR440120000000001234568550",
+            "pass": "strip",
+            "role": "dest",
+            "region": [
+              811,
+              1054,
+              747,
+              35
+            ]
+          }
+        ]
+      },
+      "paid_at": {
+        "jalali": "1405/08/24 11:42",
+        "iso": "2026-11-15T11:42:00+03:30",
+        "plausible": true,
+        "confidence": "high",
+        "candidates": [
+          {
+            "value": "1405/08/24 11:42",
+            "source": "printed",
+            "engine": "tesseract",
+            "raw_text": "1405/08/24 11:42",
+            "region": [
+              1077,
+              983,
+              475,
+              32
+            ]
+          },
+          {
+            "value": "1405/08/24 11:42",
+            "source": "printed",
+            "engine": "tesseract",
+            "raw_text": "1405/08/24 11:42",
+            "pass": "strip",
+            "region": [
+              1076,
+              982,
+              476,
+              32
+            ]
+          },
+          {
+            "value": "1405/08/24 11:42",
+            "source": "printed",
+            "engine": "easyocr",
+            "raw_text": "1405/08/24 11:42",
+            "region": [
+              1068,
+              979,
+              493,
+              42
+            ]
+          },
+          {
+            "value": "1405/08/24 11:42",
+            "source": "printed",
+            "engine": "easyocr",
+            "raw_text": "1405/08/24 11:42",
+            "pass": "strip",
+            "region": [
+              1071,
+              978,
+              489,
+              41
+            ]
+          }
+        ]
+      },
+      "tracking_number": {
+        "value": null,
+        "label": null,
+        "all": [
+          {
+            "value": "1140508249876543",
+            "label": "شماره پیگیری"
+          },
+          {
+            "value": "140508249876543",
+            "label": "شماره پیگیری"
+          }
+        ],
+        "confidence": "conflict",
+        "candidates": [
+          {
+            "value": "1140508249876543",
+            "source": "printed",
+            "engine": "tesseract",
+            "raw_text": "1140508249876543",
+            "label": "شماره پیگیری",
+            "region": [
+              957,
+              832,
+              595,
+              31
+            ]
+          },
+          {
+            "value": "1140508249876543",
+            "source": "printed",
+            "engine": "tesseract",
+            "raw_text": "1140508249876543",
+            "pass": "strip",
+            "label": "شماره پیگیری",
+            "region": [
+              957,
+              832,
+              595,
+              31
+            ]
+          },
+          {
+            "value": "140508249876543",
+            "source": "printed",
+            "engine": "easyocr",
+            "raw_text": "140508249876543",
+            "label": "شماره پیگیری",
+            "region": [
+              952,
+              826,
+              608,
+              43
+            ]
+          },
+          {
+            "value": "140508249876543",
+            "source": "printed",
+            "engine": "easyocr",
+            "raw_text": "140508249876543",
+            "pass": "strip",
+            "label": "شماره پیگیری",
+            "region": [
+              951,
+              826,
+              608,
+              42
+            ]
+          }
+        ]
+      },
+      "transfer_type": "satna",
+      "document_status": "unknown",
+      "dest_bank": "Mellat",
+      "sender": {
+        "name": {
+          "value": null,
+          "confidence": "conflict",
+          "candidates": [
+            {
+              "value": "احمدی",
+              "source": "handwritten",
+              "engine": "tesseract",
+              "raw_text": "احمدی",
+              "role": "source",
+              "region": [
+                1177,
+                557,
+                443,
+                48
+              ]
+            },
+            {
+              "value": "دضا احمدی",
+              "source": "handwritten",
+              "engine": "easyocr",
+              "raw_text": "دضا احمدی",
+              "role": "source",
+              "region": [
+                1172,
+                554,
+                455,
+                57
+              ]
+            }
+          ]
+        },
+        "account": {
+          "value": null,
+          "confidence": "low",
+          "candidates": []
+        },
+        "card": {
+          "value": null,
+          "confidence": "low",
+          "candidates": []
+        },
+        "iban": {
+          "value": null,
+          "confidence": "low",
+          "candidates": []
+        },
+        "bank": {
+          "value": null,
+          "confidence": "low",
+          "candidates": []
+        }
+      },
+      "receiver": {
+        "name": {
+          "value": "علی کریمی",
+          "confidence": "medium",
+          "candidates": [
+            {
+              "value": "علی کریمی",
+              "source": "handwritten",
+              "engine": "tesseract",
+              "raw_text": "علی کریمی",
+              "role": "dest",
+              "region": [
+                1232,
+                467,
+                388,
+                40
+              ]
+            },
+            {
+              "value": "علی کریمی",
+              "source": "handwritten",
+              "engine": "easyocr",
+              "raw_text": "علی کریمی",
+              "role": "dest",
+              "region": [
+                1226,
+                461,
+                403,
+                58
+              ]
+            }
+          ]
+        },
+        "account": {
+          "value": null,
+          "confidence": "low",
+          "candidates": []
+        },
+        "card": {
+          "value": null,
+          "confidence": "low",
+          "candidates": []
+        },
+        "iban": {
+          "value": "IR440120000000001234568550",
+          "confidence": "high",
+          "candidates": []
+        },
+        "bank": {
+          "value": null,
+          "confidence": "low",
+          "candidates": []
+        }
+      },
+      "amount_words": {
+        "value": null,
+        "confidence": "low",
+        "candidates": []
+      }
+    },
+    "tracking_number_normalized": null,
+    "settlement": {
+      "confirmed_by_this_service": false,
+      "note": "Settlement must be confirmed outside this service (by the receiver / bank statement). document_status only reports what the document says."
+    },
+    "warnings": [
+      "AMOUNT_CONFLICT",
+      "MULTIPLE_AMOUNTS",
+      "TRACKING_CONFLICT",
+      "STATUS_NOT_SUCCESS",
+      "NO_MATCHING_LINE"
+    ],
+    "engines": {
+      "vlm": "skipped: no VLM provider configured (RR_VLM_PROVIDER)",
+      "tesseract": "ok",
+      "easyocr": "ok"
+    },
+    "processing_ms": 27044,
+    "debug": null,
+    "matches": [
+      {
+        "line_id": "L-17",
+        "score": 0.5,
+        "fits": false,
+        "reasons": [
+          "AMOUNT_UNREADABLE",
+          "IBAN_FULL_MATCH",
+          "NAME_MATCH"
+        ],
+        "currency_assumed": null
+      },
+      {
+        "line_id": "L-18",
+        "score": 0.0,
+        "fits": false,
+        "reasons": [
+          "AMOUNT_UNREADABLE",
+          "IBAN_MISMATCH",
+          "NAME_MISMATCH"
+        ],
+        "currency_assumed": null
+      }
+    ],
+    "best_line_id": null,
+    "suggested_route": "manager_review",
+    "sender_question_fa": null
+  },
+  "satna_handwriting_wrong.jpg": {
+    "receipt_id": "31ceb896-4809-4fe5-95ea-dbdff688838c",
+    "request_id": "556cd29c-55d2-47a2-bae7-03e4a5e8d049",
+    "image": {
+      "sha256": "ce466399f929891cceeba0673ef6ad3b291b89c63197f1ce05ab1ca9c10b1f37",
+      "phash": "c13f3e953a816ee0",
+      "width": 2000,
+      "height": 1550,
+      "format": "JPEG",
+      "kind": "unknown",
+      "flags": []
+    },
+    "fields": {
+      "amount_rial": {
+        "value": null,
+        "confidence": "conflict",
+        "suggested_value": 4500000000,
+        "suggestion_basis": "the only printed/digital reading; other readings disagree (see candidates) — a human must confirm",
+        "candidates": [
+          {
+            "value": 15000000000,
+            "source": "handwritten",
+            "engine": "tesseract",
+            "raw_text": "15,000,000,000",
+            "currency": "rial",
+            "region": [
+              1105,
+              184,
+              519,
+              38
+            ]
+          },
+          {
+            "value": 4500000000,
+            "source": "printed",
+            "engine": "tesseract",
+            "raw_text": "4,500,000,000",
+            "label": "مبلغ",
+            "currency": "rial",
+            "region": [
+              1058,
+              909,
+              496,
+              31
+            ]
+          },
+          {
+            "value": 4500000000,
+            "source": "printed",
+            "engine": "tesseract",
+            "raw_text": "4,500,000,000",
+            "pass": "strip",
+            "label": "مبلغ",
+            "currency": "rial",
+            "region": [
+              1057,
+              909,
+              496,
+              31
+            ]
+          },
+          {
+            "value": 15000000000,
+            "source": "handwritten",
+            "engine": "easyocr",
+            "raw_text": "15,000,000,000",
+            "label": "مبلغ",
+            "region": [
+              1096,
+              168,
+              535,
+              67
+            ]
+          },
+          {
+            "value": 4500000000,
+            "source": "printed",
+            "engine": "easyocr",
+            "raw_text": "4,500,000,000",
+            "label": "مبلغ",
+            "region": [
+              1053,
+              902,
+              508,
+              45
+            ]
+          },
+          {
+            "value": 4500000000,
+            "source": "printed",
+            "engine": "easyocr",
+            "raw_text": "4,500,000,000",
+            "pass": "strip",
+            "label": "مبلغ",
+            "currency": "rial",
+            "region": [
+              1053,
+              900,
+              509,
+              45
+            ]
+          }
+        ]
+      },
+      "currency": "rial",
+      "amount_toman": null,
+      "dest_iban": {
+        "value": "IR440120000000001234568550",
+        "partial": false,
+        "checksum_valid": true,
+        "bank": "Mellat",
+        "bank_fa": "ملت",
+        "confidence": "high",
+        "candidates": [
+          {
+            "value": "IR440120000000001234568550",
+            "source": "handwritten",
+            "engine": "tesseract",
+            "raw_text": "IR440120000000001234568550",
+            "role": "dest",
+            "region": [
+              735,
+              374,
+              887,
+              32
+            ]
+          },
+          {
+            "value": "IR440120000000001234568550",
+            "source": "printed",
+            "engine": "tesseract",
+            "raw_text": "IR440120000000001234568550",
+            "role": "dest",
+            "region": [
+              819,
+              1061,
+              734,
+              29
+            ]
+          },
+          {
+            "value": "IR440120000000001234568550",
+            "source": "printed",
+            "engine": "tesseract",
+            "raw_text": "440120000000001234568550",
+            "pass": "strip",
+            "role": "dest",
+            "region": [
+              818,
+              1061,
+              734,
+              29
+            ]
+          },
+          {
+            "value": "IR440120000000001234568550",
+            "source": "handwritten",
+            "engine": "easyocr",
+            "raw_text": "IR440120000000001234568550",
+            "role": "dest",
+            "region": [
+              725,
+              365,
+              904,
+              48
+            ]
+          },
+          {
+            "value": "IR440120000000001234568550",
+            "source": "printed",
+            "engine": "easyocr",
+            "raw_text": "IR440120000000001234568550",
+            "role": "dest",
+            "region": [
+              811,
+              1054,
+              749,
+              36
+            ]
+          },
+          {
+            "value": "IR440120000000001234568550",
+            "source": "printed",
+            "engine": "easyocr",
+            "raw_text": "IR440120000000001234568550",
+            "pass": "strip",
+            "role": "dest",
+            "region": [
+              813,
+              1055,
+              747,
+              36
+            ]
+          }
+        ]
+      },
+      "paid_at": {
+        "jalali": "1405/08/24 11:42",
+        "iso": "2026-11-15T11:42:00+03:30",
+        "plausible": true,
+        "confidence": "high",
+        "candidates": [
+          {
+            "value": "1405/08/24 11:42",
+            "source": "printed",
+            "engine": "tesseract",
+            "raw_text": "1405/08/24 11:42",
+            "region": [
+              1079,
+              984,
+              475,
+              32
+            ]
+          },
+          {
+            "value": "1405/08/24 11:42",
+            "source": "printed",
+            "engine": "tesseract",
+            "raw_text": "1405/08/24 11:42",
+            "pass": "strip",
+            "region": [
+              1078,
+              983,
+              476,
+              32
+            ]
+          },
+          {
+            "value": "1405/08/24 11:42",
+            "source": "printed",
+            "engine": "easyocr",
+            "raw_text": "1405/08/24 11:42",
+            "region": [
+              1070,
+              979,
+              491,
+              42
+            ]
+          },
+          {
+            "value": "1405/08/24 11:42",
+            "source": "printed",
+            "engine": "easyocr",
+            "raw_text": "1405/08/24 11:42",
+            "pass": "strip",
+            "region": [
+              1072,
+              978,
+              488,
+              42
+            ]
+          }
+        ]
+      },
+      "tracking_number": {
+        "value": null,
+        "label": null,
+        "all": [
+          {
+            "value": "140508241234567",
+            "label": "شماره پیگیری"
+          },
+          {
+            "value": "1140508241234567",
+            "label": "شماره پیگیری"
+          },
+          {
+            "value": "140508241234567",
+            "label": "پیگیری"
+          }
+        ],
+        "confidence": "conflict",
+        "candidates": [
+          {
+            "value": "140508241234567",
+            "source": "printed",
+            "engine": "tesseract",
+            "raw_text": "140508241234567",
+            "label": "شماره پیگیری",
+            "region": [
+              959,
+              833,
+              594,
+              30
+            ]
+          },
+          {
+            "value": "1140508241234567",
+            "source": "printed",
+            "engine": "tesseract",
+            "raw_text": "1140508241234567",
+            "pass": "strip",
+            "label": "شماره پیگیری",
+            "region": [
+              958,
+              832,
+              595,
+              31
+            ]
+          },
+          {
+            "value": "140508241234567",
+            "source": "printed",
+            "engine": "easyocr",
+            "raw_text": "140508241234567",
+            "label": "شماره پیگیری",
+            "region": [
+              951,
+              827,
+              610,
+              42
+            ]
+          },
+          {
+            "value": "140508241234567",
+            "source": "printed",
+            "engine": "easyocr",
+            "raw_text": "140508241234567",
+            "pass": "strip",
+            "label": "پیگیری",
+            "region": [
+              953,
+              828,
+              606,
+              39
+            ]
+          }
+        ]
+      },
+      "transfer_type": "satna",
+      "document_status": "unknown",
+      "dest_bank": "Mellat",
+      "sender": {
+        "name": {
+          "value": "رضا احمدی",
+          "confidence": "medium",
+          "candidates": [
+            {
+              "value": "رضا احمدی",
+              "source": "handwritten",
+              "engine": "tesseract",
+              "raw_text": "رضا احمدی",
+              "role": "source",
+              "region": [
+                1179,
+                563,
+                443,
+                39
+              ]
+            },
+            {
+              "value": "دضا احمدی",
+              "source": "handwritten",
+              "engine": "easyocr",
+              "raw_text": "دضا احمدی",
+              "role": "source",
+              "region": [
+                1174,
+                554,
+                457,
+                58
+              ]
+            }
+          ]
+        },
+        "account": {
+          "value": null,
+          "confidence": "low",
+          "candidates": []
+        },
+        "card": {
+          "value": null,
+          "confidence": "low",
+          "candidates": []
+        },
+        "iban": {
+          "value": null,
+          "confidence": "low",
+          "candidates": []
+        },
+        "bank": {
+          "value": null,
+          "confidence": "low",
+          "candidates": []
+        }
+      },
+      "receiver": {
+        "name": {
+          "value": "علی کریمی",
+          "confidence": "low",
+          "candidates": [
+            {
+              "value": "علی کریمی",
+              "source": "handwritten",
+              "engine": "easyocr",
+              "raw_text": "علی کریمی",
+              "role": "dest",
+              "region": [
+                1226,
+                464,
+                403,
+                56
+              ]
+            }
+          ]
+        },
+        "account": {
+          "value": null,
+          "confidence": "low",
+          "candidates": []
+        },
+        "card": {
+          "value": null,
+          "confidence": "low",
+          "candidates": []
+        },
+        "iban": {
+          "value": "IR440120000000001234568550",
+          "confidence": "high",
+          "candidates": []
+        },
+        "bank": {
+          "value": null,
+          "confidence": "low",
+          "candidates": []
+        }
+      },
+      "amount_words": {
+        "value": null,
+        "confidence": "low",
+        "candidates": []
+      }
+    },
+    "tracking_number_normalized": null,
+    "settlement": {
+      "confirmed_by_this_service": false,
+      "note": "Settlement must be confirmed outside this service (by the receiver / bank statement). document_status only reports what the document says."
+    },
+    "warnings": [
+      "AMOUNT_CONFLICT",
+      "HANDWRITTEN_AMOUNT_DISAGREES",
+      "TRACKING_CONFLICT",
+      "STATUS_NOT_SUCCESS",
+      "NO_MATCHING_LINE"
+    ],
+    "engines": {
+      "vlm": "skipped: no VLM provider configured (RR_VLM_PROVIDER)",
+      "tesseract": "ok",
+      "easyocr": "ok"
+    },
+    "processing_ms": 31823,
+    "debug": null,
+    "matches": [
+      {
+        "line_id": "L-17",
+        "score": 0.5,
+        "fits": false,
+        "reasons": [
+          "AMOUNT_UNREADABLE",
+          "IBAN_FULL_MATCH",
+          "NAME_MATCH"
+        ],
+        "currency_assumed": null
+      },
+      {
+        "line_id": "L-18",
+        "score": 0.0,
+        "fits": false,
+        "reasons": [
+          "AMOUNT_UNREADABLE",
+          "IBAN_MISMATCH",
+          "NAME_MISMATCH"
+        ],
+        "currency_assumed": null
+      }
+    ],
+    "best_line_id": null,
+    "suggested_route": "manager_review",
+    "sender_question_fa": null
+  },
+  "satna_wrong_account.jpg": {
+    "receipt_id": "5504db08-23a2-48f9-bf67-3be9adb092f2",
+    "request_id": "a959b882-580e-491f-a5a6-fb3c0874be27",
+    "image": {
+      "sha256": "7ce0cce0199e0a3fa9df1295d7a76139877a61532dfc50e353801984bb247e5c",
+      "phash": "c13f3e953a856ec0",
+      "width": 2000,
+      "height": 1550,
+      "format": "JPEG",
+      "kind": "unknown",
+      "flags": []
+    },
+    "fields": {
+      "amount_rial": {
+        "value": 2000000000,
+        "confidence": "high",
+        "suggested_value": null,
+        "suggestion_basis": null,
+        "candidates": [
+          {
+            "value": 2000000000,
+            "source": "handwritten",
+            "engine": "tesseract",
+            "raw_text": "2,000,000,000",
+            "label": "مبلغ به ریال",
+            "currency": "rial",
+            "region": [
+              1128,
+              183,
+              494,
+              38
+            ]
+          },
+          {
+            "value": 2000000000,
+            "source": "printed",
+            "engine": "tesseract",
+            "raw_text": "2,000,000,000",
+            "currency": "rial",
+            "region": [
+              1057,
+              909,
+              497,
+              30
+            ]
+          },
+          {
+            "value": 2000000000,
+            "source": "printed",
+            "engine": "tesseract",
+            "raw_text": "2,000,000,000",
+            "pass": "strip",
+            "label": "مبلغ",
+            "currency": "rial",
+            "region": [
+              1057,
+              908,
+              497,
+              31
+            ]
+          },
+          {
+            "value": 2000000000,
+            "source": "handwritten",
+            "engine": "easyocr",
+            "raw_text": "2,000,000,000",
+            "label": "مبلغ",
+            "region": [
+              1122,
+              176,
+              510,
+              54
+            ]
+          },
+          {
+            "value": 2000000000,
+            "source": "printed",
+            "engine": "easyocr",
+            "raw_text": "2,000,000,000",
+            "label": "مبلغ",
+            "region": [
+              1051,
+              900,
+              510,
+              46
+            ]
+          }
+        ]
+      },
+      "currency": "rial",
+      "amount_toman": 200000000,
+      "dest_iban": {
+        "value": "IR980560000000009876543210",
+        "partial": false,
+        "checksum_valid": true,
+        "bank": "Saman",
+        "bank_fa": "سامان",
+        "confidence": "high",
+        "candidates": [
+          {
+            "value": "IR980560000000009876543210",
+            "source": "handwritten",
+            "engine": "tesseract",
+            "raw_text": "IR980560000000009876543210",
+            "role": "dest",
+            "region": [
+              733,
+              373,
+              888,
+              32
+            ]
+          },
+          {
+            "value": "IR980560000000009876543210",
+            "source": "printed",
+            "engine": "tesseract",
+            "raw_text": "98056000000000 9876543210",
+            "role": "dest",
+            "region": [
+              819,
+              1060,
+              734,
+              29
+            ]
+          },
+          {
+            "value": "IR505600000000099876543210",
+            "source": "printed",
+            "engine": "tesseract",
+            "raw_text": "5056000000000 998 76543210",
+            "pass": "strip",
+            "role": "dest",
+            "region": [
+              819,
+              1058,
+              734,
+              34
+            ]
+          },
+          {
+            "value": "IR980560000000009876543210",
+            "source": "handwritten",
+            "engine": "easyocr",
+            "raw_text": "IR980560000000009876543210",
+            "role": "dest",
+            "region": [
+              724,
+              355,
+              903,
+              64
+            ]
+          },
+          {
+            "value": "IR980560000000009876543210",
+            "source": "printed",
+            "engine": "easyocr",
+            "raw_text": "980560000000009876543210",
+            "role": "dest",
+            "region": [
+              813,
+              1053,
+              748,
+              38
+            ]
+          },
+          {
+            "value": "IR980560000000009876543210",
+            "source": "printed",
+            "engine": "easyocr",
+            "raw_text": "980560000000009876543210",
+            "pass": "strip",
+            "role": "dest",
+            "region": [
+              813,
+              1055,
+              747,
+              35
+            ]
+          }
+        ]
+      },
+      "paid_at": {
+        "jalali": "1405/08/24 11:42",
+        "iso": "2026-11-15T11:42:00+03:30",
+        "plausible": true,
+        "confidence": "high",
+        "candidates": [
+          {
+            "value": "1405/08/24 11:42",
+            "source": "printed",
+            "engine": "tesseract",
+            "raw_text": "1405/08/24 11:42",
+            "region": [
+              1079,
+              983,
+              475,
+              32
+            ]
+          },
+          {
+            "value": "1405/08/24 11:42",
+            "source": "printed",
+            "engine": "tesseract",
+            "raw_text": "1405/08/24 11:42",
+            "pass": "strip",
+            "region": [
+              1078,
+              982,
+              476,
+              33
+            ]
+          },
+          {
+            "value": "1405/08/24 11:42",
+            "source": "printed",
+            "engine": "easyocr",
+            "raw_text": "1405/08/24 11:42",
+            "region": [
+              1071,
+              979,
+              490,
+              42
+            ]
+          },
+          {
+            "value": "1405/08/24 11:42",
+            "source": "printed",
+            "engine": "easyocr",
+            "raw_text": "1405/08/24 11:42",
+            "pass": "strip",
+            "region": [
+              1072,
+              978,
+              489,
+              42
+            ]
+          }
+        ]
+      },
+      "tracking_number": {
+        "value": "140508241234567",
+        "label": "شماره پیگیری",
+        "all": [
+          {
+            "value": "140508241234567",
+            "label": "شماره پیگیری"
+          },
+          {
+            "value": "140508241234567",
+            "label": "پیگیری"
+          }
+        ],
+        "confidence": "high",
+        "candidates": [
+          {
+            "value": "140508241234567",
+            "source": "printed",
+            "engine": "tesseract",
+            "raw_text": "140508241234567",
+            "label": "شماره پیگیری",
+            "region": [
+              959,
+              832,
+              594,
+              31
+            ]
+          },
+          {
+            "value": "140508241234567",
+            "source": "printed",
+            "engine": "easyocr",
+            "raw_text": "140508241234567",
+            "label": "شماره پیگیری",
+            "region": [
+              952,
+              828,
+              609,
+              41
+            ]
+          },
+          {
+            "value": "140508241234567",
+            "source": "printed",
+            "engine": "easyocr",
+            "raw_text": "140508241234567",
+            "pass": "strip",
+            "label": "پیگیری",
+            "region": [
+              952,
+              827,
+              607,
+              40
+            ]
+          }
+        ]
+      },
+      "transfer_type": "satna",
+      "document_status": "unknown",
+      "dest_bank": "Saman",
+      "sender": {
+        "name": {
+          "value": null,
+          "confidence": "conflict",
+          "candidates": [
+            {
+              "value": "احمدی",
+              "source": "handwritten",
+              "engine": "tesseract",
+              "raw_text": "احمدی",
+              "role": "source",
+              "region": [
+                1178,
+                557,
+                443,
+                49
+              ]
+            },
+            {
+              "value": "دضا احمدی",
+              "source": "handwritten",
+              "engine": "easyocr",
+              "raw_text": "دضا احمدی",
+              "role": "source",
+              "region": [
+                1171,
+                553,
+                458,
+                59
+              ]
+            }
+          ]
+        },
+        "account": {
+          "value": null,
+          "confidence": "low",
+          "candidates": []
+        },
+        "card": {
+          "value": null,
+          "confidence": "low",
+          "candidates": []
+        },
+        "iban": {
+          "value": null,
+          "confidence": "low",
+          "candidates": []
+        },
+        "bank": {
+          "value": null,
+          "confidence": "low",
+          "candidates": []
+        }
+      },
+      "receiver": {
+        "name": {
+          "value": null,
+          "confidence": "conflict",
+          "candidates": [
+            {
+              "value": "کریمی",
+              "source": "handwritten",
+              "engine": "tesseract",
+              "raw_text": "کریمی",
+              "role": "dest",
+              "region": [
+                1233,
+                463,
+                388,
+                53
+              ]
+            },
+            {
+              "value": "علی کریمی",
+              "source": "handwritten",
+              "engine": "easyocr",
+              "raw_text": "علی کریمی",
+              "role": "dest",
+              "region": [
+                1226,
+                461,
+                404,
+                58
+              ]
+            }
+          ]
+        },
+        "account": {
+          "value": null,
+          "confidence": "low",
+          "candidates": []
+        },
+        "card": {
+          "value": null,
+          "confidence": "low",
+          "candidates": []
+        },
+        "iban": {
+          "value": "IR980560000000009876543210",
+          "confidence": "high",
+          "candidates": []
+        },
+        "bank": {
+          "value": null,
+          "confidence": "low",
+          "candidates": []
+        }
+      },
+      "amount_words": {
+        "value": null,
+        "confidence": "low",
+        "candidates": []
+      }
+    },
+    "tracking_number_normalized": "140508241234567",
+    "settlement": {
+      "confirmed_by_this_service": false,
+      "note": "Settlement must be confirmed outside this service (by the receiver / bank statement). document_status only reports what the document says."
+    },
+    "warnings": [
+      "STATUS_NOT_SUCCESS",
+      "NO_MATCHING_LINE",
+      "IBAN_MISMATCH"
+    ],
+    "engines": {
+      "vlm": "skipped: no VLM provider configured (RR_VLM_PROVIDER)",
+      "tesseract": "ok",
+      "easyocr": "ok"
+    },
+    "processing_ms": 26736,
+    "debug": null,
+    "matches": [
+      {
+        "line_id": "L-18",
+        "score": 0.5,
+        "fits": false,
+        "reasons": [
+          "AMOUNT_EXACT",
+          "IBAN_MISMATCH"
+        ],
+        "currency_assumed": null
+      },
+      {
+        "line_id": "L-17",
+        "score": 0.3,
+        "fits": false,
+        "reasons": [
+          "AMOUNT_PARTIAL",
+          "IBAN_MISMATCH"
+        ],
+        "currency_assumed": null
+      }
+    ],
+    "best_line_id": null,
+    "suggested_route": "manager_review",
+    "sender_question_fa": null
+  }
+}

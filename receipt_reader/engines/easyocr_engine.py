@@ -84,7 +84,13 @@ class EasyOCREngine(Engine):
             conf = sum(g[5] for g in group) / len(group)
             bbox = [int(x0 / scale) + offset[0], int(y0 / scale) + offset[1],
                     int((x1 - x0) / scale), int((y1 - y0) / scale)]
-            out.append(TextLine(text=_join_rtl([g[4] for g in group]), bbox=bbox, conf=conf,
+            text = _join_rtl([g[4] for g in group])
+            if self.s.easyocr_ambiguous_five:
+                # Measured on real Pasargad-app screenshots: EasyOCR's 'fa' model outputs Arabic «٥»
+                # both for a real 5 and for the circle-shaped Persian zero «۰». Mark it unreadable
+                # instead of guessing; numbers containing it are then not parsed at all.
+                text = text.replace("٥", "?")
+            out.append(TextLine(text=text, bbox=bbox, conf=conf,
                                 source=src_for(conf, bbox), pass_id=pass_id))
         return out
 

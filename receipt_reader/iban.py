@@ -92,8 +92,8 @@ def parse_iban(raw: Optional[str]) -> Optional[IbanInfo]:
         return None
     s = normalize_text(raw).upper()
     s = s.replace("I R", "IR")
-    m = _PARTIAL_RE.search(s)
     compact = re.sub(r"[\s\-_/.]", "", s)
+    m = _PARTIAL_RE.search(s) or _PARTIAL_RE.search(re.sub(r"[\s\-_/]", "", s))
     if re.fullmatch(r"IR\d{24}", compact):
         full = compact
     elif re.fullmatch(r"\d{24}", compact):
@@ -117,11 +117,17 @@ def parse_iban(raw: Optional[str]) -> Optional[IbanInfo]:
 
 # IBAN-shaped substrings inside free text (24 digits with optional IR and spacing)
 _IBAN_IN_TEXT = re.compile(r"(?:IR[\s\-]*)?(?:\d[\s\-]*){24}(?!\d)", re.I)
-_PARTIAL_IN_TEXT = re.compile(r"(?:IR)?[\s\-]*[*xX•]{4,}[\s\-]*\d{3,8}\b", re.I)
+# A masked IBAN must carry the IR prefix: masked card numbers look like "6037-70xx-xxxx-5190".
+_PARTIAL_IR_IN_TEXT = re.compile(r"IR[\s\-]*[\d\s\-]{0,22}[*xX•]{2,}[\s\-*xX•\d]*\d", re.I)
+_PARTIAL_BARE_IN_TEXT = re.compile(r"[*xX•]{4,}[\s\-]*\d{3,8}\b")
 
 
-def find_ibans(text: str) -> list[tuple[str, IbanInfo]]:
-    """Return (raw_substring, info) for every IBAN-like run in the text."""
+def find_ibans(text: str, iban_label: bool = False) -> list[tuple[str, IbanInfo]]:
+    """Return (raw_substring, info) for every IBAN-like run in the text.
+
+    A masked/partial IBAN is accepted only with the IR prefix, or without it when the
+    line is explicitly labelled شبا/IBAN (iban_label=True). A partial IBAN never gets a
+    checksum result (checksum_valid stays None)."""
     t = normalize_text(text)
     out: list[tuple[str, IbanInfo]] = []
     for m in _IBAN_IN_TEXT.finditer(t.upper()):
@@ -130,10 +136,14 @@ def find_ibans(text: str) -> list[tuple[str, IbanInfo]]:
         if info:
             out.append((raw, info))
     if not out:
-        for m in _PARTIAL_IN_TEXT.finditer(t):
-            info = parse_iban(m.group(0))
-            if info:
-                out.append((m.group(0).strip(), info))
+        pats = [_PARTIAL_IR_IN_TEXT] + ([_PARTIAL_BARE_IN_TEXT] if iban_label else [])
+        for pat in pats:
+            for m in pat.finditer(t):
+                info = parse_iban(m.group(0))
+                if info and info.partial:
+                    out.append((m.group(0).strip(), info))
+            if out:
+                break
     return out
 
 

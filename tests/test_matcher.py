@@ -107,7 +107,7 @@ def test_no_lines(settings, now):
 
 
 def test_name_reason(settings, now):
-    cands = good_printed(IBAN_MELLAT) + [C("dest_holder_name", "علي كريمي")]
+    cands = good_printed(IBAN_MELLAT) + [C("receiver_name", "علي كريمي")]
     _, matches, *_ = run(cands, settings, now, lines=[line("L-1", IBAN_MELLAT, 450_000_000, name="علی کریمی")])
     assert "NAME_MATCH" in matches[0].reasons
 

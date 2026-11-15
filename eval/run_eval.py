@@ -31,12 +31,17 @@ from receipt_reader.config import Settings  # noqa: E402
 from receipt_reader.dates import TEHRAN, parse_datetime  # noqa: E402
 from receipt_reader.engines import build_engines  # noqa: E402
 from receipt_reader.iban import parse_iban  # noqa: E402
-from receipt_reader.normalize import digits_only  # noqa: E402
+from rapidfuzz import fuzz  # noqa: E402
+
+from receipt_reader.normalize import digits_only, normalize_name  # noqa: E402
 from receipt_reader.pipeline import ReceiptReader  # noqa: E402
 from receipt_reader.schema import ExpectedLine  # noqa: E402
 
 IMAGE_EXT = {".jpg", ".jpeg", ".png", ".webp", ".heic"}
 FIELDS = ["amount_rial", "currency", "dest_iban", "paid_at", "tracking_number", "transfer_type", "document_status"]
+PARTY_FIELDS = [f"{side}_{k}" for side in ("sender", "receiver") for k in ("name", "card", "account", "bank")]
+CONF_FIELDS = {"amount_rial": "amount_rial", "dest_iban": "dest_iban", "paid_at": "paid_at",
+               "tracking_number": "tracking_number"}
 
 
 def predicted(res) -> dict:
@@ -49,7 +54,29 @@ def predicted(res) -> dict:
         "tracking_number": f.tracking_number.value,
         "transfer_type": f.transfer_type if f.transfer_type != "unknown" else None,
         "document_status": f.document_status if f.document_status != "unknown" else None,
+        **{f"{side}_{k}": _party_value(getattr(getattr(f, side), k).value, k)
+           for side in ("sender", "receiver") for k in ("name", "card", "account", "bank")},
     }
+
+
+def _party_value(v, kind):
+    if v is None:
+        return None
+    if kind == "card":
+        return digits_only(v)[-4:] or None
+    if kind == "account":
+        return digits_only(v)
+    if kind == "name":
+        return normalize_name(v)
+    return v
+
+
+def same(k: str, a, b) -> bool:
+    if a is None or b is None:
+        return a is b
+    if k.endswith("_name"):
+        return fuzz.token_sort_ratio(a, b) >= 90
+    return a == b
 
 
 def truth_of(gt: dict) -> dict:
@@ -69,7 +96,16 @@ def truth_of(gt: dict) -> dict:
         "tracking_number": digits_only(gt["tracking_number"]) if gt.get("tracking_number") else None,
         "transfer_type": gt.get("transfer_type"),
         "document_status": gt.get("document_status"),
+        **{f"{side}_{k}": _party_value((gt.get(side) or {}).get(k), k)
+           for side in ("sender", "receiver") for k in ("name", "card", "account", "bank")},
     }
+
+
+def labelled(gt: dict, k: str) -> bool:
+    if k in PARTY_FIELDS:
+        side, sub = k.split("_", 1)
+        return sub in (gt.get(side) or {})
+    return k in gt or (k == "paid_at" and "paid_at_jalali" in gt)
 
 
 def chosen_source(res, field: str):
@@ -101,7 +137,8 @@ def main(argv=None) -> int:
         print(f"no images in {args.dataset}")
         return 2
 
-    per_field = {k: Counter() for k in FIELDS}
+    per_field = {k: Counter() for k in FIELDS + PARTY_FIELDS}
+    confident_wrong = []
     source_conf = defaultdict(Counter)  # field -> (truth_source, predicted_source) counts
     routes = Counter()
     dangerous, rows = [], []
@@ -121,15 +158,24 @@ def main(argv=None) -> int:
             now = now.replace(tzinfo=TEHRAN)
         res = reader.read(img.read_bytes(), lines, engines=engines, now=now)
         pred, truth = predicted(res), truth_of(gt)
-        for k in FIELDS:
-            if truth[k] is None and k not in gt:
-                continue  # field not labelled
-            if pred[k] is None:
-                per_field[k]["null"] += 1
-            elif pred[k] == truth[k]:
-                per_field[k]["exact"] += 1
+        for k in FIELDS + PARTY_FIELDS:
+            if not labelled(gt, k):
+                continue
+            ok = same(k, pred[k], truth[k])
+            if not ok and k == "tracking_number" and pred[k] and gt.get("reference_numbers"):
+                # a correct number read under ANOTHER label of the same receipt is still correct,
+                # provided the reader reports that label
+                lbl = res.fields.tracking_number.label or ""
+                ok = any(v == pred[k] and lbl.split()[-1] in L for L, v in gt["reference_numbers"].items())
+            if ok:
+                per_field[k]["exact"] += 1           # includes "correctly empty"
+            elif pred[k] is None:
+                per_field[k]["null"] += 1            # missed (truth has a value)
             else:
-                per_field[k]["wrong"] += 1
+                per_field[k]["wrong"] += 1           # wrong or invented value
+                conf = getattr(res.fields, CONF_FIELDS[k]).confidence if k in CONF_FIELDS else None
+                if conf == "high":
+                    confident_wrong.append({"image": img.name, "field": k, "pred": pred[k], "truth": truth[k]})
             per_field[k]["n"] += 1
         for k, src in (gt.get("sources") or {}).items():
             source_conf[k][(src, chosen_source(res, k) or "none")] += 1
@@ -159,6 +205,7 @@ def main(argv=None) -> int:
         "dangerous_error_rate": len(dangerous) / n if n else None,
         "dangerous_errors": dangerous,
         "auto_match_share": routes["match"] / n if n else None,
+        "confident_wrong_values": confident_wrong,
         "routes": dict(routes),
         "fields": {k: {"n": c["n"], "exact_rate": c["exact"] / c["n"] if c["n"] else None,
                        "null_rate": c["null"] / c["n"] if c["n"] else None,
@@ -177,6 +224,8 @@ def main(argv=None) -> int:
         print(f"*** {synthetic}/{n} SYNTHETIC samples — this is a plumbing check, NOT an accuracy measurement ***")
     print(f"receipts: {n}   dangerous errors: {len(dangerous)} ({report['dangerous_error_rate']:.1%})   "
           f"auto-match: {routes['match']} ({report['auto_match_share']:.1%})   routes: {dict(routes)}")
+    print(f"wrong values reported with confidence=high: {len(confident_wrong)} {confident_wrong}")
+    print("exact = correct value or correctly empty; null = missed; wrong = wrong or invented value")
     print(f"{'field':18s} {'n':>4s} {'exact':>7s} {'null':>7s} {'wrong':>7s}")
     for k, v in report["fields"].items():
         if v["n"]:

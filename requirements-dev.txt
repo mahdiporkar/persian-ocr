@@ -1,4 +1,5 @@
 -r requirements.txt
+-r requirements-cloud.txt
 pytest>=8.0
 arabic-reshaper>=3.0
 python-bidi>=0.4

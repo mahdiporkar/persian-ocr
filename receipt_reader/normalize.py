@@ -88,6 +88,8 @@ def parse_amount_digits(raw: Optional[str]) -> Optional[int]:
     m = re.fullmatch(r"(.+?)[.,](0{1,2})", s)
     if m and re.search(r"[.,' ]\d{3}$", m.group(1)) is not None:
         s = m.group(1)
+    if len(s) > 1 and s[0] == "0":
+        return None  # "09,000" / "0450000": a leading zero is not an amount
     if not any(c in s for c in _SEP_CHARS):
         return int(s)
     groups = re.split(r"[,.' ’]+", s)
@@ -117,11 +119,19 @@ def format_fa_number(n: int) -> str:
 LABELS: dict[str, list[str]] = {
     "payer": ["واریز کننده", "واریزکننده", "پرداخت کننده", "فرستنده", "نام واریز کننده"],
     "beneficiary": ["ذینفع", "ذی نفع", "گیرنده", "صاحب حساب مقصد", "نام ذینفع", "دریافت کننده"],
-    "to_account": ["به حساب", "حساب مقصد", "شبای مقصد", "شماره شبای مقصد", "مقصد", "شبا مقصد"],
-    "from_account": ["از حساب", "حساب مبدا", "مبدا", "شبای مبدا", "حساب برداشت"],
+    # section markers: everything after them (until the other marker) is about that party
+    "to_account": ["به حساب", "حساب مقصد", "شبای مقصد", "شماره شبای مقصد", "مقصد", "شبا مقصد", "واریز به",
+                   "به کارت", "به بانک"],
+    "from_account": ["از حساب", "حساب مبدا", "مبدا", "شبای مبدا", "حساب برداشت", "برداشت از", "از کارت",
+                     "از بانک"],
+    "holder": ["دارنده کارت", "به نام", "صاحب حساب", "نام صاحب حساب"],
+    "account_ref": ["به شماره", "شماره حساب", "حساب شماره"],
+    "bank": ["بانک"],
     "iban": ["شماره شبا", "شبا", "iban", "sheba", "شناسه شبا"],
     "account_no": ["شماره حساب", "حساب شماره"],
-    "card_no": ["شماره کارت", "کارت مقصد", "کارت مبدا"],
+    "card_no": ["شماره کارت", "کارت مقصد", "کارت مبدا", "از کارت", "به کارت"],
+    "deposit_id": ["شناسه واریز", "شناسه پرداخت"],
+    "terminal": ["شماره ترمینال", "ترمینال", "شماره پایانه"],
     "amount": ["مبلغ", "مبلغ واریزی", "مبلغ انتقال", "مبلغ تراکنش", "مبلغ ریال", "مبلغ به ریال", "amount"],
     "amount_words": ["مبلغ به حروف", "به حروف", "مبلغ حروف"],
     "rial": ["ریال", "rial", "irr"],
@@ -135,8 +145,8 @@ LABELS: dict[str, list[str]] = {
     "satna": ["ساتنا", "satna"],
     "paya": ["پایا", "paya"],
     "internal": ["انتقال داخلی", "حساب به حساب", "انتقال وجه داخلی", "بین بانکی داخلی"],
-    "card_to_card": ["کارت به کارت", "انتقال کارت", "card to card"],
-    "success": ["موفق", "انجام شد", "با موفقیت", "successful", "success", "تراکنش موفق"],
+    "card_to_card": ["کارت به کارت", "انتقال کارت", "card to card", "کارت مقصد", "به کارت"],
+    "success": ["موفق", "انجام شد", "با موفقیت", "successful", "success", "تراکنش موفق", "انتقال یافت"],
     "failed": ["ناموفق", "نا موفق", "انجام نشد", "خطا", "failed", "unsuccessful", "رد شد", "برگشت"],
     "pending": ["در انتظار", "در حال پردازش", "در جریان", "pending", "ثبت شد"],
     "balance": ["مانده", "موجودی", "مانده حساب", "balance"],
@@ -149,7 +159,7 @@ _NORMALIZED_LABELS = {k: [normalize_text(v).lower() for v in vs] for k, vs in LA
 
 def find_labels(text: str) -> set[str]:
     """Return the set of canonical label ids present in a line of text."""
-    t = normalize_text(text).lower()
+    t = " ".join(normalize_text(text).lower().replace(":", " ").replace("：", " ").split())
     found = set()
     for key, forms in _NORMALIZED_LABELS.items():
         for f in forms:

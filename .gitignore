@@ -7,3 +7,4 @@ eval/real/
 eval/reports/
 demo/frames/
 *.egg-info/
+*-frames/

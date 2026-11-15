@@ -76,4 +76,42 @@ def test_status_and_type_votes():
 
 def test_beneficiary_name():
     c, _ = _parse("نام ذینفع: علی کریمی")
-    assert by(c, "dest_holder_name")[0].value == "علی کریمی"
+    assert by(c, "receiver_name")[0].value == "علی کریمی"
+
+
+# ---- regressions found on the owner's real receipts ----
+def test_no_digit_fragments_from_unreadable_tokens():
+    c, _ = _parse("شماره ارجاع 13??517?461208833?9")
+    assert by(c, "tracking_number") == []
+
+
+def test_inherited_amount_label_needs_a_grouped_amount():
+    c, _ = _parse("مبلغ انتقال", "198877665544 شماره ارجاع")
+    assert by(c, "amount") == []
+    c, _ = _parse("مبلغ انتقال", "7,315,000 ریال")
+    assert [x.value for x in by(c, "amount")] == [7_315_000]
+
+
+def test_leading_zero_is_not_an_amount():
+    c, _ = _parse("مبلغ انتقال 09,000 ریال")
+    assert by(c, "amount") == []
+
+
+def test_bare_holder_label_without_section_is_not_assigned():
+    c, _ = _parse("به نام ممدر کوثه")
+    assert by(c, "receiver_name") == [] and by(c, "sender_name") == []
+    c, _ = _parse("دارنده کارت کاوه صادقی")
+    assert by(c, "receiver_name")[0].value == "کاوه صادقی"
+
+
+def test_card_last4_survives_an_unreadable_group():
+    c, _ = _parse("کارت مقصد 86-62??xX-XXXX-3307")
+    assert [x.value for x in by(c, "receiver_card")] == ["XXXX-3307"]
+
+
+def test_misread_label_line_does_not_inherit_previous_label():
+    # «ارجاع» misread as «ارچاع»: the reference number must not become the «پیگیری» number
+    c, _ = _parse("شماره پیگیری", "71234598765 شماره ارچاع")
+    assert by(c, "tracking_number") == []
+    c, _ = _parse("شماره پیگیری:", "381946")
+    assert [x.value for x in by(c, "tracking_number")] == ["381946"]

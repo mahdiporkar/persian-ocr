@@ -36,16 +36,14 @@ class Settings(BaseSettings):
     tessdata_prefix: Optional[str] = None
     tesseract_langs: str = "fas+eng"
     tesseract_printed_min_conf: float = 75.0
+    # EasyOCR outputs «٥» for both 5 and the circle-shaped Persian zero; treat it as unreadable
+    easyocr_ambiguous_five: bool = True
 
     # --- rules ---
     date_max_age_days: int = 3
     max_amount_rial: int = 10**14
     min_amount_rial: int = 10_000
     name_match_threshold: int = 85
-    printed_strip_implies_success: bool = True
-    # Two passes of the SAME engine on different crops count as independent reads
-    # (as the spec allows). Set false to require two different engines.
-    same_engine_crops_independent: bool = True
 
     log_level: str = "INFO"
 

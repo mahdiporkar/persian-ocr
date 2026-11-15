@@ -1,15 +1,13 @@
-"""Cross-check candidates from all engines/passes and assign confidence levels.
+"""Cross-check candidates from all engines and assign confidence levels.
 
-The exact rules are documented in README.md ("Confidence rules"). Summary:
+Exact rules: README.md, "Confidence rules". Key principles (owner decisions):
 
-  high     — two independent reads agree (different engine, or same engine on a
-             different crop) and at least one is printed/digital; or one
-             printed/digital read that passes every validator of its field.
-             For amounts a single read is never "high" unless the amount in words
-             agrees: there is no other validator for an amount.
-  medium   — one clean source and no conflict.
-  low      — handwriting only, a failed validator, or unclear.
-  conflict — sources disagree; every candidate is kept, no value is picked.
+* Independent evidence = DIFFERENT ENGINES. Two passes of the same engine (full page
+  and zoomed strip) are one source of evidence.
+* Any disagreement between amount readings is a conflict: no value is picked, every
+  candidate is kept, the route becomes manager_review. A printed/digital reading may be
+  offered as `suggested_value` for the human, never used for matching.
+* document_status reports what the document says; it never claims settlement.
 """
 from __future__ import annotations
 
@@ -24,11 +22,14 @@ from .config import Settings
 from .dates import is_plausible, parse_datetime
 from .iban import bank_for_code, parse_iban
 from .normalize import digits_only, normalize_name
-from .schema import (AmountField, Candidate, DateField, Fields, IbanField, TextField,
+from .schema import (AmountField, Candidate, DateField, Fields, IbanField, Party, TextField,
                      TrackingField)
 
 TRUSTED = ("printed", "digital")
 _LEVEL = {"conflict": -1, "low": 0, "medium": 1, "high": 2}
+
+TRACKING_MIN_DIGITS = 5   # card-to-card tracking numbers are often 5-6 digits (leading zero dropped)
+TRACKING_MAX_DIGITS = 30
 
 
 def _cap(level: str, cap: str) -> str:
@@ -37,12 +38,9 @@ def _cap(level: str, cap: str) -> str:
     return level if _LEVEL[level] <= _LEVEL[cap] else cap
 
 
-def _key(c: Candidate, crops_independent: bool = True) -> tuple[str, str]:
-    return (c.engine, c.pass_id) if crops_independent else (c.engine, "")
-
-
-def _independent(cs: Iterable[Candidate], crops_independent: bool = True) -> int:
-    return len({_key(c, crops_independent) for c in cs})
+def engines_of(cs: Iterable[Candidate]) -> int:
+    """Number of independent sources = number of distinct engines."""
+    return len({c.engine for c in cs})
 
 
 def _pub(cs: Iterable[Candidate]) -> list[dict]:
@@ -53,7 +51,6 @@ def _pub(cs: Iterable[Candidate]) -> list[dict]:
 class Hints:
     transfer_votes: dict[str, int]
     status_votes: dict[str, int]
-    printed_strip_found: bool = False
 
 
 class Resolver:
@@ -61,9 +58,6 @@ class Resolver:
         self.s = settings
         self.now = now
         self.warnings: list[str] = []
-
-    def _ind(self, cs: Iterable[Candidate]) -> int:
-        return _independent(cs, self.s.same_engine_crops_independent)
 
     def warn(self, code: str) -> None:
         if code not in self.warnings:
@@ -81,61 +75,44 @@ class Resolver:
         if len(units) > 1:  # both rial and toman were seen
             self.warn("AMOUNT_CONFLICT")
 
+        def to_rial(v: int) -> int:
+            return v * 10 if currency == "toman" else v
+
         words = [c for c in amts if c.source == "words"]
-        digits = [c for c in amts if c.source != "words"]
-        trusted = [c for c in digits if c.source in TRUSTED]
-        hand = [c for c in digits if c.source == "handwritten"]
-        word_vals = {c.value for c in words}
+        trusted = [c for c in amts if c.source in TRUSTED]
+        hand = [c for c in amts if c.source == "handwritten"]
+        values = {c.value for c in amts}
 
-        value: Optional[int] = None
-        conf = "low"
-        tvals = {c.value for c in trusted}
-        if len(tvals) > 1:
-            self.warn("MULTIPLE_AMOUNTS")
+        if len(values) > 1:
+            # any disagreement -> conflict, whatever the sources
             self.warn("AMOUNT_CONFLICT")
-            conf = "conflict"
-        elif len(tvals) == 1:
-            value = next(iter(tvals))
-            agree = [c for c in trusted if c.value == value]
-            words_agree = value in word_vals
-            if word_vals and not words_agree:
-                self.warn("AMOUNT_CONFLICT")
-                conf, value = "conflict", None
-            else:
-                if word_vals - {value}:
-                    self.warn("AMOUNT_CONFLICT")
-                conf = "high" if (self._ind(agree) >= 2 or words_agree) else "medium"
-                if any(c.value != value for c in hand):
-                    self.warn("AMOUNT_CONFLICT")
+            tvals = {c.value for c in trusted}
+            if len(tvals) > 1:
+                self.warn("MULTIPLE_AMOUNTS")
+            if len(tvals) == 1:
+                tv = next(iter(tvals))
+                if any(c.value != tv for c in hand):
                     self.warn("HANDWRITTEN_AMOUNT_DISAGREES")
-        else:
-            hvals = {c.value for c in hand}
-            if len(hvals) > 1:
-                self.warn("AMOUNT_CONFLICT")
-                conf = "conflict"
-            elif len(hvals) == 1:
-                value = next(iter(hvals))
-                if word_vals and value not in word_vals:
-                    self.warn("AMOUNT_CONFLICT")
-                    conf, value = "conflict", None
-                elif value in word_vals:
-                    conf = "medium"  # handwriting-only is capped at medium
-                else:
-                    conf = "low"
-            elif len(word_vals) == 1:
-                value, conf = next(iter(word_vals)), "low"
-            elif len(word_vals) > 1:
-                self.warn("AMOUNT_CONFLICT")
-                conf = "conflict"
+                out.suggested_value = to_rial(tv)
+                out.suggestion_basis = ("the only printed/digital reading; other readings disagree "
+                                        "(see candidates) — a human must confirm")
+            out.confidence = "conflict"
+            return out, currency, None
 
-        rial: Optional[int] = None
-        if value is not None:
-            rial = value * 10 if currency == "toman" else value
-            if not (self.s.min_amount_rial <= rial <= self.s.max_amount_rial):
-                conf = _cap(conf, "low")
+        v = next(iter(values))
+        if trusted:
+            conf = "high" if (engines_of(trusted) >= 2 or words) else "medium"
+        elif hand:
+            # handwriting only is capped at medium, even when the words agree
+            conf = "medium" if (words or engines_of(hand) >= 2) else "low"
+        else:
+            conf = "low"  # words only
+        rial = to_rial(v)
+        if not (self.s.min_amount_rial <= rial <= self.s.max_amount_rial):
+            conf = _cap(conf, "low")
         out.value = rial
         out.confidence = conf
-        toman = rial // 10 if (rial is not None and rial % 10 == 0) else None
+        toman = rial // 10 if rial % 10 == 0 else None
         return out, currency, toman
 
     # -------------------------------------------------------------------- IBAN
@@ -145,7 +122,7 @@ class Resolver:
         dest = [c for c in ibs if c.role == "dest"]
         unknown = [c for c in ibs if c.role in (None, "unknown") and c.value not in source_vals]
         pool = dest or unknown
-        out = IbanField(candidates=_pub(ibs))
+        out = IbanField(candidates=_pub(c for c in ibs if c.role != "source"))
         if not pool:
             return out
         role_cap = "high" if dest else "medium"
@@ -164,24 +141,21 @@ class Resolver:
         if len(valid_vals) == 1:
             v = next(iter(valid_vals))
             p = next(p for _, p in full_valid)
-            agree = [c for c, q in full_valid]
+            agree = [c for c, _ in full_valid]
             for _, q in partial:
                 if not v.endswith(q.value.lstrip(".")):
                     self.warn("IBAN_CONFLICT")
                     out.confidence = "conflict"
-                    out.value = None
                     return out
             agree_trusted = [c for c in agree if c.source in TRUSTED]
             known_bank = bank_for_code(p.bank_code) is not None
-            if agree_trusted and (self._ind(agree) >= 2 or known_bank):
-                conf = "high"
-            elif agree_trusted:
+            if agree_trusted and (engines_of(agree) >= 2 or known_bank):
+                conf = "high"   # mod-97 + known bank code are strong validators for one printed read
+            elif agree_trusted or engines_of(agree) >= 2:
                 conf = "medium"
-            elif self._ind(agree) >= 2:
-                conf = "medium"  # handwriting only, but two reads agree and checksum passes
             else:
                 conf = "low"
-            named = {c.value for c in cands if c.field == "dest_bank_name"}
+            named = {c.value for c in cands if c.field == "receiver_bank"}
             if named and p.bank_code not in named:
                 self.warn("BANK_NAME_MISMATCH")
                 conf = _cap(conf, "medium")
@@ -197,7 +171,7 @@ class Resolver:
             out.bank, out.bank_fa = p.bank, p.bank_fa
             out.confidence = "low"
             return out
-        # partial only
+        # partial only: never checksum-validated
         self.warn("PARTIAL_IBAN")
         sfx = sorted({p.value.lstrip(".") for _, p in partial}, key=len, reverse=True)
         longest = sfx[0]
@@ -233,21 +207,23 @@ class Resolver:
             return out
         day_items = next(iter(by_day.values()))
         timed = [(c, p) for c, p in day_items if not p.date_only]
-        times = {p.jalali for _, p in timed}
-        if len(times) > 1:
+        if len({p.jalali for _, p in timed}) > 1:
+            self.warn("DATE_CONFLICT")
+            out.confidence = "conflict"
+            return out
+        if trusted and any(p.iso[:10] != day_items[0][1].iso[:10] for c, p in ds if c.source == "handwritten"):
             self.warn("DATE_CONFLICT")
             out.confidence = "conflict"
             return out
         c0, p0 = (timed or day_items)[0]
-        if trusted and any(p.iso[:10] != p0.iso[:10] for c, p in ds if c.source == "handwritten"):
-            self.warn("DATE_CONFLICT")
         out.jalali, out.iso = p0.jalali, p0.iso
         plausible = is_plausible(p0, self.now, self.s.date_max_age_days)
         out.plausible = plausible
+        n_eng = engines_of(c for c, _ in day_items)
         if trusted:
-            conf = "high" if (self._ind(c for c, _ in day_items) >= 2 or not p0.date_only) else "medium"
+            conf = "high" if n_eng >= 2 else "medium"
         else:
-            conf = "medium" if self._ind(c for c, _ in day_items) >= 2 else "low"
+            conf = "medium" if n_eng >= 2 else "low"
         if not plausible:
             self.warn("DATE_IMPLAUSIBLE")
             conf = "low"
@@ -258,14 +234,14 @@ class Resolver:
     _LABEL_PRIORITY = ("پیگیری", "مرجع", "رهگیری", "ارجاع", "تراکنش", "سند")
 
     def tracking(self, cands: list[Candidate]) -> TrackingField:
-        ts = [c for c in cands if c.field == "tracking_number" and digits_only(str(c.value))]
+        ts = [c for c in cands if c.field == "tracking_number"
+              and TRACKING_MIN_DIGITS <= len(digits_only(str(c.value))) <= TRACKING_MAX_DIGITS]
         out = TrackingField(candidates=_pub(ts))
         if not ts:
             return out
         seen = {}
         for c in ts:
-            v = digits_only(str(c.value))
-            seen.setdefault((v, c.label), c)
+            seen.setdefault((digits_only(str(c.value)), c.label), c)
         out.all = [{"value": v, "label": lbl} for (v, lbl) in seen]
 
         def prio(c: Candidate) -> int:
@@ -287,34 +263,51 @@ class Resolver:
         v = vals.pop()
         agree = [c for c in pool if digits_only(str(c.value)) == v]
         out.value, out.label = v, agree[0].label
-        valid = 6 <= len(v) <= 30
+        # a tracking number has no checksum: one engine's read is never "high"
         if trusted:
-            conf = "high" if valid else "low"  # printed/digital + format validator
+            out.confidence = "high" if engines_of(agree) >= 2 else "medium"
         else:
-            conf = "medium" if (self._ind(agree) >= 2 and valid) else "low"
-        out.confidence = conf
+            out.confidence = "medium" if engines_of(agree) >= 2 else "low"
         return out
 
-    # ------------------------------------------------------------------- names
-    def text_field(self, cands: list[Candidate], name: str) -> TextField:
+    # ------------------------------------------------------------ text fields
+    def text_field(self, cands: list[Candidate], name: str, key=normalize_name, display=None) -> TextField:
         cs = [c for c in cands if c.field == name and c.value]
         out = TextField(candidates=_pub(cs))
         if not cs:
             return out
-        best = Counter(normalize_name(c.value) for c in cs).most_common(1)[0][0]
-        rep = next(c for c in cs if normalize_name(c.value) == best)
-        agree = [c for c in cs if fuzz.token_sort_ratio(normalize_name(c.value), best) >= self.s.name_match_threshold]
+        best = Counter(key(c.value) for c in cs).most_common(1)[0][0]
+        rep = next(c for c in cs if key(c.value) == best)
+        agree = [c for c in cs if fuzz.token_sort_ratio(key(c.value), best) >= self.s.name_match_threshold]
         disagree = [c for c in cs if c not in agree]
-        out.value = rep.value
-        if disagree and self._ind(disagree) >= 1 and self._ind(agree) == 1:
+        out.value = display(rep.value) if display else rep.value
+        if disagree and engines_of(agree) == 1 and engines_of(disagree) >= 1:
             out.confidence = "conflict"
-        elif self._ind(agree) >= 2 and any(c.source in TRUSTED for c in agree):
+            out.value = None  # readings disagree: keep all candidates, pick none
+        elif engines_of(agree) >= 2 and any(c.source in TRUSTED for c in agree):
             out.confidence = "high"
-        elif any(c.source in TRUSTED for c in agree) or self._ind(agree) >= 2:
+        elif any(c.source in TRUSTED for c in agree) or engines_of(agree) >= 2:
             out.confidence = "medium"
         else:
             out.confidence = "low"
         return out
+
+    def party(self, cands: list[Candidate], side: str) -> Party:
+        def last4(v: str) -> str:
+            return digits_only(v)[-4:]
+
+        def bank_name(code: str) -> str:
+            info = bank_for_code(code)
+            return info["en"] if info else code
+
+        return Party(
+            name=self.text_field(cands, f"{side}_name"),
+            account=self.text_field(cands, f"{side}_account", key=digits_only),
+            card=self.text_field(cands, f"{side}_card", key=last4, display=lambda v: "…" + last4(v)),
+            iban=(self.text_field([c for c in cands if c.field == "iban" and c.role == "source"], "iban",
+                                  key=lambda v: v) if side == "sender" else TextField()),
+            bank=self.text_field(cands, f"{side}_bank", key=lambda v: v, display=bank_name),
+        )
 
     # ------------------------------------------------------------------- enums
     @staticmethod
@@ -322,7 +315,7 @@ class Resolver:
         v = dict(votes)
         for c in cands:
             if c.field == field and c.value:
-                v[c.value] = v.get(c.value, 0) + 2  # structured reading weighs more than a keyword
+                v[c.value] = v.get(c.value, 0) + 2  # a structured reading weighs more than a keyword
         return v
 
     def transfer_type(self, cands, hints: Hints) -> str:
@@ -335,17 +328,15 @@ class Resolver:
             return "unknown"
         return ranked[0][0]
 
-    def document_status(self, cands, hints: Hints, tracking: TrackingField) -> str:
+    def document_status(self, cands, hints: Hints) -> str:
+        """Only explicit words on the document count. A printed tracking number or a teller
+        strip is NOT evidence of success (owner decision)."""
         v = self._vote(cands, "document_status", hints.status_votes)
         if v.get("failed"):
             return "failed"
         if v.get("pending"):
             return "pending"
         if v.get("success"):
-            return "success"
-        if (self.s.printed_strip_implies_success and hints.printed_strip_found
-                and tracking.value and any(c.source == "printed" and c.pass_id == "strip"
-                                           for c in cands if c.field == "tracking_number")):
             return "success"
         return "unknown"
 
@@ -362,15 +353,16 @@ def resolve(cands: list[Candidate], hints: Hints, settings: Settings, now: datet
     f.paid_at = r.paid_at(cands)
     f.tracking_number = r.tracking(cands)
     f.transfer_type = r.transfer_type(cands, hints)
-    f.document_status = r.document_status(cands, hints, f.tracking_number)
-    f.dest_holder_name = r.text_field(cands, "dest_holder_name")
-    f.source_name = r.text_field(cands, "source_name")
-    f.source_account = r.text_field(cands, "source_account")
+    f.document_status = r.document_status(cands, hints)
+    f.sender = r.party(cands, "sender")
+    f.receiver = r.party(cands, "receiver")
+    if f.dest_iban.value:
+        f.receiver.iban = TextField(value=f.dest_iban.value, confidence=f.dest_iban.confidence)
     words = [c for c in cands if c.field == "amount" and c.source == "words"]
     if words:
-        f.amount_words = TextField(value=words[0].raw_text, confidence="medium" if len(words) > 1 else "low",
+        f.amount_words = TextField(value=words[0].raw_text, confidence="medium" if engines_of(words) > 1 else "low",
                                    candidates=_pub(words))
-    if f.amount_rial.value is not None and currency == "unknown":
+    if (f.amount_rial.value is not None or f.amount_rial.suggested_value is not None) and currency == "unknown":
         r.warn("UNKNOWN_CURRENCY")
     if f.document_status != "success":
         r.warn("STATUS_NOT_SUCCESS")

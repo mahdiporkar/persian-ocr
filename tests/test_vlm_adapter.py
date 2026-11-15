@@ -58,14 +58,15 @@ def test_prompt_never_contains_expected_values():
     for p in prompts:
         assert "333" not in p and "L-SECRET" not in p and "محرمانه" not in p and IBAN_MELLAT not in p
     f = res.fields
-    # printed (two passes) wins, words agree -> 450,000,000 rial = 45,000,000 toman
-    assert f.amount_rial.value == 450_000_000 and f.amount_rial.confidence == "high"
+    # handwritten 1.5B disagrees with printed/words 450M -> conflict; printed is only suggested
+    assert f.amount_rial.value is None and f.amount_rial.confidence == "conflict"
+    assert f.amount_rial.suggested_value == 450_000_000
     assert "HANDWRITTEN_AMOUNT_DISAGREES" in res.warnings
-    assert f.dest_iban.value == IBAN_MELLAT and f.dest_iban.confidence == "high"
+    assert f.dest_iban.value == IBAN_MELLAT and f.dest_iban.confidence == "high"  # mod-97 + known bank
     assert f.tracking_number.value == "140508241234567"  # the '?' reading was dropped, not guessed
+    assert f.tracking_number.confidence == "medium"  # full + strip of ONE engine = one source
     assert f.transfer_type == "satna"
-    assert res.suggested_route == "manager_review"  # 45M toman is above the 33.3M line: no fit
-    assert "AMOUNT_OVER_REMAINING" in res.matches[0].reasons
+    assert res.suggested_route == "manager_review"
 
 
 def test_cloud_vlm_disabled_by_default():
