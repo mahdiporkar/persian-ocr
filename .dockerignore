@@ -1,0 +1,7 @@
+.venv
+.git
+eval/real
+eval/reports
+demo
+**/__pycache__
+.env

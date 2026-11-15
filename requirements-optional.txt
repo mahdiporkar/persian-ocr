@@ -1,0 +1,5 @@
+-r requirements.txt
+# optional second local engine (Persian 'fa' model); pulls PyTorch CPU
+easyocr>=1.7
+# optional HEIC support
+pillow-heif>=0.16

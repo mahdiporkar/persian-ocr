@@ -1,0 +1,8 @@
+[project]
+name = "receipt-reader"
+version = "0.3.0"
+description = "Reads Iranian bank transfer receipts for a settlement bot and suggests which open line they pay."
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

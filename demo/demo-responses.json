@@ -1,0 +1,1872 @@
+{
+  "satna_handwriting_wrong": {
+    "receipt_id": "8c499388-3daf-4d61-8713-f6f1d6d8b85d",
+    "request_id": "b7395073-f72c-4fb1-b47a-2edb73d58979",
+    "image": {
+      "sha256": "ce466399f929891cceeba0673ef6ad3b291b89c63197f1ce05ab1ca9c10b1f37",
+      "phash": "c13f3e953a816ee0",
+      "width": 2000,
+      "height": 1550,
+      "format": "JPEG",
+      "kind": "unknown",
+      "flags": []
+    },
+    "fields": {
+      "amount_rial": {
+        "value": 4500000000,
+        "confidence": "high",
+        "candidates": [
+          {
+            "value": 15000000000,
+            "source": "handwritten",
+            "engine": "tesseract",
+            "raw_text": "15,000,000,000",
+            "currency": "rial",
+            "region": [
+              1105,
+              184,
+              519,
+              38
+            ]
+          },
+          {
+            "value": 4500000000,
+            "source": "printed",
+            "engine": "tesseract",
+            "raw_text": "4,500,000,000",
+            "currency": "rial",
+            "region": [
+              1058,
+              909,
+              496,
+              31
+            ]
+          },
+          {
+            "value": 4500000000,
+            "source": "printed",
+            "engine": "tesseract",
+            "raw_text": "4,500,000,000",
+            "pass": "strip",
+            "currency": "rial",
+            "region": [
+              1067,
+              919,
+              496,
+              31
+            ]
+          },
+          {
+            "value": 15000000000,
+            "source": "handwritten",
+            "engine": "easyocr",
+            "raw_text": "15,000,000,000",
+            "region": [
+              1096,
+              168,
+              535,
+              67
+            ]
+          },
+          {
+            "value": 4500000000,
+            "source": "printed",
+            "engine": "easyocr",
+            "raw_text": "4,500,000,000",
+            "region": [
+              1053,
+              902,
+              508,
+              45
+            ]
+          },
+          {
+            "value": 4500000000,
+            "source": "printed",
+            "engine": "easyocr",
+            "raw_text": "4,500,000,000",
+            "pass": "strip",
+            "currency": "rial",
+            "region": [
+              1063,
+              910,
+              509,
+              45
+            ]
+          }
+        ]
+      },
+      "currency": "rial",
+      "amount_toman": 450000000,
+      "dest_iban": {
+        "value": "IR440120000000001234568550",
+        "partial": false,
+        "checksum_valid": true,
+        "bank": "Mellat",
+        "bank_fa": "ملت",
+        "confidence": "high",
+        "candidates": [
+          {
+            "value": "IR440120000000001234568550",
+            "source": "handwritten",
+            "engine": "tesseract",
+            "raw_text": "IR440120000000001234568550",
+            "role": "dest",
+            "region": [
+              735,
+              374,
+              887,
+              32
+            ]
+          },
+          {
+            "value": "IR440120000000001234568550",
+            "source": "printed",
+            "engine": "tesseract",
+            "raw_text": "IR440120000000001234568550",
+            "role": "dest",
+            "region": [
+              819,
+              1061,
+              734,
+              29
+            ]
+          },
+          {
+            "value": "IR440120000000001234568550",
+            "source": "printed",
+            "engine": "tesseract",
+            "raw_text": "440120000000001234568550",
+            "pass": "strip",
+            "role": "dest",
+            "region": [
+              828,
+              1071,
+              734,
+              29
+            ]
+          },
+          {
+            "value": "IR440120000000001234568550",
+            "source": "handwritten",
+            "engine": "easyocr",
+            "raw_text": "IR440120000000001234568550",
+            "role": "dest",
+            "region": [
+              725,
+              365,
+              904,
+              48
+            ]
+          },
+          {
+            "value": "IR440120000000001234568550",
+            "source": "printed",
+            "engine": "easyocr",
+            "raw_text": "IR440120000000001234568550",
+            "role": "dest",
+            "region": [
+              811,
+              1054,
+              749,
+              36
+            ]
+          },
+          {
+            "value": "IR440120000000001234568550",
+            "source": "printed",
+            "engine": "easyocr",
+            "raw_text": "IR440120000000001234568550",
+            "pass": "strip",
+            "role": "dest",
+            "region": [
+              823,
+              1065,
+              747,
+              36
+            ]
+          }
+        ]
+      },
+      "paid_at": {
+        "jalali": "1405/08/24 11:42",
+        "iso": "2026-11-15T11:42:00+03:30",
+        "plausible": true,
+        "confidence": "high",
+        "candidates": [
+          {
+            "value": "1405/08/24 11:42",
+            "source": "printed",
+            "engine": "tesseract",
+            "raw_text": "1405/08/24 11:42",
+            "region": [
+              1079,
+              984,
+              475,
+              32
+            ]
+          },
+          {
+            "value": "1405/08/24 11:42",
+            "source": "printed",
+            "engine": "tesseract",
+            "raw_text": "1405/08/24 11:42",
+            "pass": "strip",
+            "region": [
+              1088,
+              993,
+              476,
+              32
+            ]
+          },
+          {
+            "value": "1405/08/24 11:42",
+            "source": "printed",
+            "engine": "easyocr",
+            "raw_text": "1405/08/24 11:42",
+            "region": [
+              1070,
+              979,
+              491,
+              42
+            ]
+          },
+          {
+            "value": "1405/08/24 11:42",
+            "source": "printed",
+            "engine": "easyocr",
+            "raw_text": "1405/08/24 11:42",
+            "pass": "strip",
+            "region": [
+              1082,
+              988,
+              488,
+              42
+            ]
+          }
+        ]
+      },
+      "tracking_number": {
+        "value": null,
+        "label": null,
+        "all": [
+          {
+            "value": "140508241234567",
+            "label": "شماره پیگیری"
+          },
+          {
+            "value": "1140508241234567",
+            "label": "شماره پیگیری"
+          },
+          {
+            "value": "140508241234567",
+            "label": "پیگیری"
+          }
+        ],
+        "confidence": "conflict",
+        "candidates": [
+          {
+            "value": "140508241234567",
+            "source": "printed",
+            "engine": "tesseract",
+            "raw_text": "140508241234567",
+            "label": "شماره پیگیری",
+            "region": [
+              959,
+              833,
+              594,
+              30
+            ]
+          },
+          {
+            "value": "1140508241234567",
+            "source": "printed",
+            "engine": "tesseract",
+            "raw_text": "1140508241234567",
+            "pass": "strip",
+            "label": "شماره پیگیری",
+            "region": [
+              968,
+              842,
+              595,
+              31
+            ]
+          },
+          {
+            "value": "140508241234567",
+            "source": "printed",
+            "engine": "easyocr",
+            "raw_text": "140508241234567",
+            "label": "شماره پیگیری",
+            "region": [
+              951,
+              827,
+              610,
+              42
+            ]
+          },
+          {
+            "value": "140508241234567",
+            "source": "printed",
+            "engine": "easyocr",
+            "raw_text": "140508241234567",
+            "pass": "strip",
+            "label": "پیگیری",
+            "region": [
+              963,
+              838,
+              606,
+              39
+            ]
+          }
+        ]
+      },
+      "transfer_type": "satna",
+      "document_status": "unknown",
+      "dest_holder_name": {
+        "value": "wos le",
+        "confidence": "conflict",
+        "candidates": [
+          {
+            "value": "wos le",
+            "source": "handwritten",
+            "engine": "tesseract",
+            "raw_text": "wos le",
+            "role": "dest",
+            "region": [
+              1234,
+              468,
+              388,
+              39
+            ]
+          },
+          {
+            "value": "علی کریمی",
+            "source": "handwritten",
+            "engine": "easyocr",
+            "raw_text": "علی کریمی",
+            "role": "dest",
+            "region": [
+              1226,
+              464,
+              403,
+              56
+            ]
+          }
+        ]
+      },
+      "dest_bank": "Mellat",
+      "source_name": {
+        "value": "رضا احمدی",
+        "confidence": "medium",
+        "candidates": [
+          {
+            "value": "رضا احمدی",
+            "source": "handwritten",
+            "engine": "tesseract",
+            "raw_text": "رضا احمدی",
+            "role": "source",
+            "region": [
+              1179,
+              563,
+              443,
+              39
+            ]
+          },
+          {
+            "value": "دضا احمدی",
+            "source": "handwritten",
+            "engine": "easyocr",
+            "raw_text": "دضا احمدی",
+            "role": "source",
+            "region": [
+              1174,
+              554,
+              457,
+              58
+            ]
+          }
+        ]
+      },
+      "source_account": {
+        "value": null,
+        "confidence": "low",
+        "candidates": []
+      },
+      "amount_words": {
+        "value": null,
+        "confidence": "low",
+        "candidates": []
+      }
+    },
+    "tracking_number_normalized": null,
+    "matches": [
+      {
+        "line_id": "L-17",
+        "score": 0.9,
+        "fits": true,
+        "reasons": [
+          "AMOUNT_EXACT",
+          "IBAN_FULL_MATCH",
+          "NAME_MISMATCH"
+        ],
+        "currency_assumed": null
+      },
+      {
+        "line_id": "L-18",
+        "score": 0.05,
+        "fits": false,
+        "reasons": [
+          "AMOUNT_OVER_REMAINING",
+          "IBAN_MISMATCH",
+          "NAME_MISMATCH"
+        ],
+        "currency_assumed": null
+      }
+    ],
+    "best_line_id": "L-17",
+    "suggested_route": "manager_review",
+    "sender_question_fa": null,
+    "warnings": [
+      "AMOUNT_CONFLICT",
+      "HANDWRITTEN_AMOUNT_DISAGREES",
+      "TRACKING_CONFLICT",
+      "STATUS_NOT_SUCCESS"
+    ],
+    "engines": {
+      "vlm": "skipped: no VLM provider configured (RR_VLM_PROVIDER)",
+      "tesseract": "ok",
+      "easyocr": "ok"
+    },
+    "processing_ms": 25164,
+    "debug": {
+      "image_kind": "unknown",
+      "document_cropped": true,
+      "skew_deg": 0.0,
+      "printed_strip_box": [
+        119,
+        729,
+        1471,
+        412
+      ],
+      "quality": [],
+      "engines": {
+        "tesseract": {
+          "full_text": "بانک ملت فرم درخواست انتقال وجه Lilw‏\n15,000,000,000 به ریال:‎ alo\nمبلغ به حروف: چهار میلیارد و پانصد میلیون JL,‏\nبه حساب شبا: IR440120000000001234568550‏\nنام ذینفع: wos le‏\nنام واریز کننده: رضا احمدی\nساتنا SATNA‏\nشماره پیگیری: 140508241234567\nمبلغ: ریال 500,000,000 ,4\nتاریخ: 11:42 1405/08/24\nIR440120000000001234568550 مقصد:‎ Lit",
+          "strip_text": "ساتنا 5۸117۸\nشماره پیگیری: 1140508241234567\nمبلغ: ریال 000,000 ,500 ,4\nتاریخ:+: 11:42 1405/08/24\nTR440120000000001234568550 مقصد:‎ Lis"
+        },
+        "easyocr": {
+          "full_text": "بانک ملت فرم درخواست انتقال وجه ساتنا\nمبلغ به دیال : 15,000,000,000\nمبلغ به حروف : چهار میلیارد و پانصل میلیون ریال\nبه حساب شبا : IR440120000000001234568550\nنام ذینفع : علی کریمی\nنام واريز کننده : دضا احمدی\nساتنا SATNA\nشماره پیگیری : 140508241234567\nمبلغ ریسال 4,500,000, 000\nتاریخ : 1405/08/24 11: 42\nشدا مقصد IR440120000000001234568550",
+          "strip_text": "ساتنا SATNA\nشما ره پیگیری 140508241234567 .\nمبلغ : ریال 4,500,000, 000\nتاریخ : 1405/08/24 11: 42\nشبا مقصد : IR440120000000001234568550"
+        }
+      }
+    }
+  },
+  "satna_clean": {
+    "receipt_id": "87f12665-c79a-42ab-9e6d-1f1e7c4c51c2",
+    "request_id": "01f243cd-ba46-4f83-a3f4-a9764c4c16d2",
+    "image": {
+      "sha256": "d58382ae21132e173b56679b588a13dde13fbe57fdabf1d2f27fc8f0203d65e4",
+      "phash": "c16a3ed03ac46eb5",
+      "width": 2000,
+      "height": 1550,
+      "format": "JPEG",
+      "kind": "unknown",
+      "flags": []
+    },
+    "fields": {
+      "amount_rial": {
+        "value": null,
+        "confidence": "conflict",
+        "candidates": [
+          {
+            "value": 4500000000,
+            "source": "handwritten",
+            "engine": "tesseract",
+            "raw_text": "4,500,000,000",
+            "currency": "rial",
+            "region": [
+              1126,
+              183,
+              496,
+              38
+            ]
+          },
+          {
+            "value": 4500000000,
+            "source": "printed",
+            "engine": "tesseract",
+            "raw_text": "4,500,000,000",
+            "currency": "rial",
+            "region": [
+              1057,
+              908,
+              495,
+              31
+            ]
+          },
+          {
+            "value": 4500000000,
+            "source": "printed",
+            "engine": "tesseract",
+            "raw_text": "4,500,000,000",
+            "pass": "strip",
+            "currency": "rial",
+            "region": [
+              1066,
+              918,
+              496,
+              31
+            ]
+          },
+          {
+            "value": 4500000000,
+            "source": "handwritten",
+            "engine": "easyocr",
+            "raw_text": "4,500,000,000",
+            "currency": "rial",
+            "region": [
+              1120,
+              176,
+              510,
+              56
+            ]
+          },
+          {
+            "value": 4500000000,
+            "source": "printed",
+            "engine": "easyocr",
+            "raw_text": "4,500,000,000",
+            "currency": "rial",
+            "region": [
+              1051,
+              903,
+              510,
+              43
+            ]
+          },
+          {
+            "value": 500000000,
+            "source": "printed",
+            "engine": "easyocr",
+            "raw_text": "500,000,000",
+            "pass": "strip",
+            "currency": "rial",
+            "region": [
+              1056,
+              909,
+              515,
+              46
+            ]
+          }
+        ]
+      },
+      "currency": "rial",
+      "amount_toman": null,
+      "dest_iban": {
+        "value": "IR440120000000001234568550",
+        "partial": false,
+        "checksum_valid": true,
+        "bank": "Mellat",
+        "bank_fa": "ملت",
+        "confidence": "high",
+        "candidates": [
+          {
+            "value": "IR440120000000001234568550",
+            "source": "handwritten",
+            "engine": "tesseract",
+            "raw_text": "IR440120000000001234568550",
+            "role": "dest",
+            "region": [
+              733,
+              373,
+              887,
+              32
+            ]
+          },
+          {
+            "value": "IR440120000000001234568550",
+            "source": "printed",
+            "engine": "tesseract",
+            "raw_text": "IR440120000000001234568550",
+            "role": "dest",
+            "region": [
+              818,
+              1060,
+              733,
+              29
+            ]
+          },
+          {
+            "value": "IR440120000000001234568550",
+            "source": "printed",
+            "engine": "tesseract",
+            "raw_text": "440120000000001234568550",
+            "pass": "strip",
+            "role": "dest",
+            "region": [
+              827,
+              1070,
+              734,
+              29
+            ]
+          },
+          {
+            "value": "IR440120000000001234568550",
+            "source": "handwritten",
+            "engine": "easyocr",
+            "raw_text": "IR440120000000001234568550",
+            "role": "dest",
+            "region": [
+              723,
+              362,
+              904,
+              54
+            ]
+          },
+          {
+            "value": "IR440120000000001234568550",
+            "source": "printed",
+            "engine": "easyocr",
+            "raw_text": "440120000000001234568550",
+            "role": "dest",
+            "region": [
+              811,
+              1053,
+              749,
+              39
+            ]
+          },
+          {
+            "value": "IR440120000000001234568550",
+            "source": "printed",
+            "engine": "easyocr",
+            "raw_text": "IR440120000000001234568550",
+            "pass": "strip",
+            "role": "dest",
+            "region": [
+              821,
+              1064,
+              747,
+              35
+            ]
+          }
+        ]
+      },
+      "paid_at": {
+        "jalali": "1405/08/24 11:42",
+        "iso": "2026-11-15T11:42:00+03:30",
+        "plausible": true,
+        "confidence": "high",
+        "candidates": [
+          {
+            "value": "1405/08/24 11:42",
+            "source": "printed",
+            "engine": "tesseract",
+            "raw_text": "1405/08/24 11:42",
+            "region": [
+              1077,
+              983,
+              475,
+              32
+            ]
+          },
+          {
+            "value": "1405/08/24 11:42",
+            "source": "printed",
+            "engine": "tesseract",
+            "raw_text": "1405/08/24 11:42",
+            "pass": "strip",
+            "region": [
+              1086,
+              992,
+              476,
+              32
+            ]
+          },
+          {
+            "value": "1405/08/24 11:42",
+            "source": "printed",
+            "engine": "easyocr",
+            "raw_text": "1405/08/24 11:42",
+            "region": [
+              1068,
+              979,
+              493,
+              42
+            ]
+          },
+          {
+            "value": "1405/08/24 11:42",
+            "source": "printed",
+            "engine": "easyocr",
+            "raw_text": "1405/08/24 11:42",
+            "pass": "strip",
+            "region": [
+              1081,
+              988,
+              489,
+              41
+            ]
+          }
+        ]
+      },
+      "tracking_number": {
+        "value": null,
+        "label": null,
+        "all": [
+          {
+            "value": "1140508249876543",
+            "label": "شماره پیگیری"
+          },
+          {
+            "value": "140508249876543",
+            "label": "شماره پیگیری"
+          }
+        ],
+        "confidence": "conflict",
+        "candidates": [
+          {
+            "value": "1140508249876543",
+            "source": "printed",
+            "engine": "tesseract",
+            "raw_text": "1140508249876543",
+            "label": "شماره پیگیری",
+            "region": [
+              957,
+              832,
+              595,
+              31
+            ]
+          },
+          {
+            "value": "1140508249876543",
+            "source": "printed",
+            "engine": "tesseract",
+            "raw_text": "1140508249876543",
+            "pass": "strip",
+            "label": "شماره پیگیری",
+            "region": [
+              967,
+              842,
+              595,
+              31
+            ]
+          },
+          {
+            "value": "140508249876543",
+            "source": "printed",
+            "engine": "easyocr",
+            "raw_text": "140508249876543",
+            "label": "شماره پیگیری",
+            "region": [
+              952,
+              826,
+              608,
+              43
+            ]
+          },
+          {
+            "value": "140508249876543",
+            "source": "printed",
+            "engine": "easyocr",
+            "raw_text": "140508249876543",
+            "pass": "strip",
+            "label": "شماره پیگیری",
+            "region": [
+              961,
+              836,
+              608,
+              42
+            ]
+          }
+        ]
+      },
+      "transfer_type": "satna",
+      "document_status": "unknown",
+      "dest_holder_name": {
+        "value": "علی کریمی",
+        "confidence": "medium",
+        "candidates": [
+          {
+            "value": "علی کریمی",
+            "source": "handwritten",
+            "engine": "tesseract",
+            "raw_text": "علی کریمی",
+            "role": "dest",
+            "region": [
+              1232,
+              467,
+              388,
+              40
+            ]
+          },
+          {
+            "value": "علی کریمی",
+            "source": "handwritten",
+            "engine": "easyocr",
+            "raw_text": "علی کریمی",
+            "role": "dest",
+            "region": [
+              1226,
+              461,
+              403,
+              58
+            ]
+          }
+        ]
+      },
+      "dest_bank": "Mellat",
+      "source_name": {
+        "value": "bo, احمدی",
+        "confidence": "conflict",
+        "candidates": [
+          {
+            "value": "bo, احمدی",
+            "source": "handwritten",
+            "engine": "tesseract",
+            "raw_text": "bo, احمدی",
+            "role": "source",
+            "region": [
+              1177,
+              557,
+              443,
+              48
+            ]
+          },
+          {
+            "value": "دضا احمدی",
+            "source": "handwritten",
+            "engine": "easyocr",
+            "raw_text": "دضا احمدی",
+            "role": "source",
+            "region": [
+              1172,
+              554,
+              455,
+              57
+            ]
+          }
+        ]
+      },
+      "source_account": {
+        "value": null,
+        "confidence": "low",
+        "candidates": []
+      },
+      "amount_words": {
+        "value": null,
+        "confidence": "low",
+        "candidates": []
+      }
+    },
+    "tracking_number_normalized": null,
+    "matches": [
+      {
+        "line_id": "L-17",
+        "score": 0.5,
+        "fits": false,
+        "reasons": [
+          "AMOUNT_UNREADABLE",
+          "IBAN_FULL_MATCH",
+          "NAME_MATCH"
+        ],
+        "currency_assumed": null
+      },
+      {
+        "line_id": "L-18",
+        "score": 0.0,
+        "fits": false,
+        "reasons": [
+          "AMOUNT_UNREADABLE",
+          "IBAN_MISMATCH",
+          "NAME_MISMATCH"
+        ],
+        "currency_assumed": null
+      }
+    ],
+    "best_line_id": null,
+    "suggested_route": "manager_review",
+    "sender_question_fa": null,
+    "warnings": [
+      "MULTIPLE_AMOUNTS",
+      "AMOUNT_CONFLICT",
+      "TRACKING_CONFLICT",
+      "STATUS_NOT_SUCCESS",
+      "NO_MATCHING_LINE"
+    ],
+    "engines": {
+      "vlm": "skipped: no VLM provider configured (RR_VLM_PROVIDER)",
+      "tesseract": "ok",
+      "easyocr": "ok"
+    },
+    "processing_ms": 22573,
+    "debug": {
+      "image_kind": "unknown",
+      "document_cropped": true,
+      "skew_deg": 0.0,
+      "printed_strip_box": [
+        118,
+        728,
+        1471,
+        412
+      ],
+      "quality": [],
+      "engines": {
+        "tesseract": {
+          "full_text": "بانک ملت فرم درخواست انتقال وجه ساتنا\n4,500,000,000 به ریال:‎ alo\nJL) به حروف: چهار میلیارد و پانصد میلیون‎ alo\nبه حساب شبا: IR440120000000001234568550‏\nنام ذینفع: علی کریمی\nنام واریز کننده: bo,‏ احمدی\nSATNA ساتنا‎\nشماره پیگیری: 1140508249876543\nمبلغ: ریال 500,000,000 ,4\nتاریخ: 11:42 1405/08/24\nIR440120000000001234568550 مقصد:‎ Lit",
+          "strip_text": "ساتنا 5۸11۸\nشماره پیگیری: 1140508249876543\nمبلغ: ریال 4,500,000,000\nتاریخ:+ 11:42 1405/08/24\nشبا مقصد: TR440120000000001234568550‏"
+        },
+        "easyocr": {
+          "full_text": "بانک ملت فرم درخواست انتقال وجه ساتنا\nمبلغ به ريال : 4,500,000,000\nمبلغ به حروف : چهار میلیارد 9 پانصل میلیون ریال\nبه حساب شبا : IR440120000000001234568550\nنام ذینفع : علی کریمی\nنام واریز کننده : دضا احمدی\nساتنا SATNA\nشماره پیگیری : 140508249876543\nمبلغ ریال  4,500,000,000\nتاریخ : 1405/08/24 11:42\nشبا مقصد 1R440120000000001234568550",
+          "strip_text": "ساتنا SATNA\nشماره پیگیری ; 140508249876543\nمبلغ : ریال 500,000, 000 ا4\nتاریخ : 1405/08/24 11:42\nشدا مقصد : IR440120000000001234568550"
+        }
+      }
+    }
+  },
+  "satna_wrong_account": {
+    "receipt_id": "2cbd9a75-80fd-4197-b7b3-aa28f1407b24",
+    "request_id": "7daf2dfa-9773-4d67-b877-411f762bd568",
+    "image": {
+      "sha256": "7ce0cce0199e0a3fa9df1295d7a76139877a61532dfc50e353801984bb247e5c",
+      "phash": "c13f3e953a856ec0",
+      "width": 2000,
+      "height": 1550,
+      "format": "JPEG",
+      "kind": "unknown",
+      "flags": []
+    },
+    "fields": {
+      "amount_rial": {
+        "value": 2000000000,
+        "confidence": "high",
+        "candidates": [
+          {
+            "value": 2000000000,
+            "source": "handwritten",
+            "engine": "tesseract",
+            "raw_text": "2,000,000,000",
+            "currency": "rial",
+            "region": [
+              1128,
+              183,
+              494,
+              38
+            ]
+          },
+          {
+            "value": 2000000000,
+            "source": "printed",
+            "engine": "tesseract",
+            "raw_text": "2,000,000,000",
+            "currency": "rial",
+            "region": [
+              1057,
+              909,
+              497,
+              30
+            ]
+          },
+          {
+            "value": 2000000000,
+            "source": "printed",
+            "engine": "tesseract",
+            "raw_text": "2,000,000,000",
+            "pass": "strip",
+            "currency": "rial",
+            "region": [
+              1067,
+              918,
+              497,
+              31
+            ]
+          },
+          {
+            "value": 2000000000,
+            "source": "handwritten",
+            "engine": "easyocr",
+            "raw_text": "2,000,000,000",
+            "region": [
+              1122,
+              176,
+              510,
+              54
+            ]
+          },
+          {
+            "value": 2000000000,
+            "source": "printed",
+            "engine": "easyocr",
+            "raw_text": "2,000,000,000",
+            "region": [
+              1051,
+              900,
+              510,
+              46
+            ]
+          }
+        ]
+      },
+      "currency": "rial",
+      "amount_toman": 200000000,
+      "dest_iban": {
+        "value": "IR980560000000009876543210",
+        "partial": false,
+        "checksum_valid": true,
+        "bank": "Saman",
+        "bank_fa": "سامان",
+        "confidence": "high",
+        "candidates": [
+          {
+            "value": "IR980560000000009876543210",
+            "source": "handwritten",
+            "engine": "tesseract",
+            "raw_text": "IR980560000000009876543210",
+            "role": "dest",
+            "region": [
+              733,
+              373,
+              888,
+              32
+            ]
+          },
+          {
+            "value": "IR980560000000009876543210",
+            "source": "printed",
+            "engine": "tesseract",
+            "raw_text": "98056000000000 9876543210",
+            "role": "dest",
+            "region": [
+              819,
+              1060,
+              734,
+              29
+            ]
+          },
+          {
+            "value": "IR505600000000099876543210",
+            "source": "printed",
+            "engine": "tesseract",
+            "raw_text": "5056000000000 998 76543210",
+            "pass": "strip",
+            "role": "dest",
+            "region": [
+              829,
+              1068,
+              734,
+              34
+            ]
+          },
+          {
+            "value": "IR980560000000009876543210",
+            "source": "handwritten",
+            "engine": "easyocr",
+            "raw_text": "IR980560000000009876543210",
+            "role": "dest",
+            "region": [
+              724,
+              355,
+              903,
+              64
+            ]
+          },
+          {
+            "value": "IR980560000000009876543210",
+            "source": "printed",
+            "engine": "easyocr",
+            "raw_text": "980560000000009876543210",
+            "role": "dest",
+            "region": [
+              813,
+              1053,
+              748,
+              38
+            ]
+          },
+          {
+            "value": "IR980560000000009876543210",
+            "source": "printed",
+            "engine": "easyocr",
+            "raw_text": "980560000000009876543210",
+            "pass": "strip",
+            "role": "dest",
+            "region": [
+              823,
+              1065,
+              747,
+              35
+            ]
+          }
+        ]
+      },
+      "paid_at": {
+        "jalali": "1405/08/24 11:42",
+        "iso": "2026-11-15T11:42:00+03:30",
+        "plausible": true,
+        "confidence": "high",
+        "candidates": [
+          {
+            "value": "1405/08/24 11:42",
+            "source": "printed",
+            "engine": "tesseract",
+            "raw_text": "1405/08/24 11:42",
+            "region": [
+              1079,
+              983,
+              475,
+              32
+            ]
+          },
+          {
+            "value": "1405/08/24 11:42",
+            "source": "printed",
+            "engine": "tesseract",
+            "raw_text": "1405/08/24 11:42",
+            "pass": "strip",
+            "region": [
+              1088,
+              992,
+              476,
+              33
+            ]
+          },
+          {
+            "value": "1405/08/24 11:42",
+            "source": "printed",
+            "engine": "easyocr",
+            "raw_text": "1405/08/24 11:42",
+            "region": [
+              1071,
+              979,
+              490,
+              42
+            ]
+          },
+          {
+            "value": "1405/08/24 11:42",
+            "source": "printed",
+            "engine": "easyocr",
+            "raw_text": "1405/08/24 11:42",
+            "pass": "strip",
+            "region": [
+              1082,
+              988,
+              489,
+              42
+            ]
+          }
+        ]
+      },
+      "tracking_number": {
+        "value": "140508241234567",
+        "label": "شماره پیگیری",
+        "all": [
+          {
+            "value": "140508241234567",
+            "label": "شماره پیگیری"
+          },
+          {
+            "value": "140508241234567",
+            "label": "پیگیری"
+          }
+        ],
+        "confidence": "high",
+        "candidates": [
+          {
+            "value": "140508241234567",
+            "source": "printed",
+            "engine": "tesseract",
+            "raw_text": "140508241234567",
+            "label": "شماره پیگیری",
+            "region": [
+              959,
+              832,
+              594,
+              31
+            ]
+          },
+          {
+            "value": "140508241234567",
+            "source": "printed",
+            "engine": "easyocr",
+            "raw_text": "140508241234567",
+            "label": "شماره پیگیری",
+            "region": [
+              952,
+              828,
+              609,
+              41
+            ]
+          },
+          {
+            "value": "140508241234567",
+            "source": "printed",
+            "engine": "easyocr",
+            "raw_text": "140508241234567",
+            "pass": "strip",
+            "label": "پیگیری",
+            "region": [
+              962,
+              837,
+              607,
+              40
+            ]
+          }
+        ]
+      },
+      "transfer_type": "satna",
+      "document_status": "success",
+      "dest_holder_name": {
+        "value": "le کریمی",
+        "confidence": "conflict",
+        "candidates": [
+          {
+            "value": "le کریمی",
+            "source": "handwritten",
+            "engine": "tesseract",
+            "raw_text": "le کریمی",
+            "role": "dest",
+            "region": [
+              1233,
+              463,
+              388,
+              53
+            ]
+          },
+          {
+            "value": "علی کریمی",
+            "source": "handwritten",
+            "engine": "easyocr",
+            "raw_text": "علی کریمی",
+            "role": "dest",
+            "region": [
+              1226,
+              461,
+              404,
+              58
+            ]
+          }
+        ]
+      },
+      "dest_bank": "Saman",
+      "source_name": {
+        "value": "lo, احمدی",
+        "confidence": "conflict",
+        "candidates": [
+          {
+            "value": "lo, احمدی",
+            "source": "handwritten",
+            "engine": "tesseract",
+            "raw_text": "lo, احمدی",
+            "role": "source",
+            "region": [
+              1178,
+              557,
+              443,
+              49
+            ]
+          },
+          {
+            "value": "دضا احمدی",
+            "source": "handwritten",
+            "engine": "easyocr",
+            "raw_text": "دضا احمدی",
+            "role": "source",
+            "region": [
+              1171,
+              553,
+              458,
+              59
+            ]
+          }
+        ]
+      },
+      "source_account": {
+        "value": null,
+        "confidence": "low",
+        "candidates": []
+      },
+      "amount_words": {
+        "value": null,
+        "confidence": "low",
+        "candidates": []
+      }
+    },
+    "tracking_number_normalized": "140508241234567",
+    "matches": [
+      {
+        "line_id": "L-18",
+        "score": 0.5,
+        "fits": false,
+        "reasons": [
+          "AMOUNT_EXACT",
+          "IBAN_MISMATCH",
+          "NAME_MISMATCH"
+        ],
+        "currency_assumed": null
+      },
+      {
+        "line_id": "L-17",
+        "score": 0.3,
+        "fits": false,
+        "reasons": [
+          "AMOUNT_PARTIAL",
+          "IBAN_MISMATCH",
+          "NAME_MISMATCH"
+        ],
+        "currency_assumed": null
+      }
+    ],
+    "best_line_id": null,
+    "suggested_route": "manager_review",
+    "sender_question_fa": null,
+    "warnings": [
+      "NO_MATCHING_LINE",
+      "IBAN_MISMATCH"
+    ],
+    "engines": {
+      "vlm": "skipped: no VLM provider configured (RR_VLM_PROVIDER)",
+      "tesseract": "ok",
+      "easyocr": "ok"
+    },
+    "processing_ms": 22265,
+    "debug": {
+      "image_kind": "unknown",
+      "document_cropped": true,
+      "skew_deg": 0.0,
+      "printed_strip_box": [
+        120,
+        729,
+        1471,
+        411
+      ],
+      "quality": [],
+      "engines": {
+        "tesseract": {
+          "full_text": "SL‏ سامان فرم درخواست انتقال وجه ساتنا\nمبلغ به ریال: 2,000,000,000\nمبلغ به حروف: دو میلیارد JL,‏\nبه حساب شبا: IR980560000000009876543210‏\nنام ذینفع: le‏ کریمی\nنام واریز کننده: lo,‏ احمدی\nساتنا 82712\nشماره پیگیری: 140508241234567\nمبدلغ: ریال 2,000,000,000\nتاریخ: 11:42 1405/08/24\n1398056000000000 9876543210 مقصد:‎ Lis",
+          "strip_text": "ساتنا 5۸177۸\nشماره پبگیری: 1400508241234567\nمبلغ: ریال 2,000,000,000\nتاریخ: 11:42 1405/08/24\n1۳9۵056000000000 ۹98 76543210 مقصد:‎ Lis"
+        },
+        "easyocr": {
+          "full_text": "بانک سامان فدم درخواست انتقال وجه ساتنا\nمبلغ به ديال : 2,000,000,000\nمبلغ به حروف : دو میلیارد دیال\nبه حساب شبا : IR980560000000009876543210\nنام ذینفع : علی کریمی\nنام واریز کننده : دضا احمدی\nساتنا SATNA\nشماره پیگیری : 140508241234567\nمبلغ ریسال 2,000,000, 000\nتاریخ : 1405/08/24 11: 42\nشبا مقصد 1R980560000000009876543210",
+          "strip_text": "ساتنا SATNA\nشمار ٥ پیگیری 140508241234567 :\nمبلغ : ریسال 000,000, 000 ا2\nتاریخ : 1405/08/24 11: 42\nشبا مقصد . [R980560000000009876543210"
+        }
+      }
+    }
+  },
+  "paya_screenshot": {
+    "receipt_id": "97891757-1f1e-451c-a1f5-e2cd791edcf2",
+    "request_id": "53e8c755-cf98-457a-845f-c6125ce695f8",
+    "image": {
+      "sha256": "6081ff19c3106bcddc5feec4d59cf25e221830d4d2c814b045e2343995a36a1b",
+      "phash": "9e1e60614f4f6333",
+      "width": 1080,
+      "height": 1920,
+      "format": "PNG",
+      "kind": "screenshot",
+      "flags": [
+        "SCREENSHOT_OF_SCREENSHOT"
+      ]
+    },
+    "fields": {
+      "amount_rial": {
+        "value": 2000000000,
+        "confidence": "high",
+        "candidates": [
+          {
+            "value": 2000000000,
+            "source": "digital",
+            "engine": "tesseract",
+            "raw_text": "2,000,000,000",
+            "region": [
+              91,
+              520,
+              1418,
+              56
+            ]
+          },
+          {
+            "value": 2000000000,
+            "source": "digital",
+            "engine": "easyocr",
+            "raw_text": "2,000,000,000",
+            "currency": "rial",
+            "region": [
+              82,
+              509,
+              1441,
+              80
+            ]
+          }
+        ]
+      },
+      "currency": "rial",
+      "amount_toman": 200000000,
+      "dest_iban": {
+        "value": "IR710170000000003456781234",
+        "partial": false,
+        "checksum_valid": true,
+        "bank": "Melli",
+        "bank_fa": "ملی",
+        "confidence": "high",
+        "candidates": [
+          {
+            "value": "IR710170000000003456781234",
+            "source": "digital",
+            "engine": "tesseract",
+            "raw_text": "IR710170000000003456781234",
+            "role": "unknown",
+            "region": [
+              91,
+              712,
+              1417,
+              54
+            ]
+          },
+          {
+            "value": "IR710170000000003456781234",
+            "source": "digital",
+            "engine": "easyocr",
+            "raw_text": "IR710170000000003456781234",
+            "role": "dest",
+            "region": [
+              81,
+              703,
+              1439,
+              68
+            ]
+          }
+        ]
+      },
+      "paid_at": {
+        "jalali": "1405/08/24 09:15",
+        "iso": "2026-11-15T09:15:00+03:30",
+        "plausible": true,
+        "confidence": "high",
+        "candidates": [
+          {
+            "value": "1405/08/24 09:15",
+            "source": "digital",
+            "engine": "tesseract",
+            "raw_text": "1405/08/24 09:15",
+            "region": [
+              95,
+              1290,
+              1413,
+              56
+            ]
+          },
+          {
+            "value": "1405/08/24 09:15",
+            "source": "digital",
+            "engine": "easyocr",
+            "raw_text": "1405/08/24 09:15",
+            "region": [
+              84,
+              1278,
+              1439,
+              80
+            ]
+          }
+        ]
+      },
+      "tracking_number": {
+        "value": "987654321012",
+        "label": "شماره پیگیری",
+        "all": [
+          {
+            "value": "987654321012",
+            "label": "شماره پیگیری"
+          }
+        ],
+        "confidence": "high",
+        "candidates": [
+          {
+            "value": "987654321012",
+            "source": "digital",
+            "engine": "tesseract",
+            "raw_text": "987654321012",
+            "label": "شماره پیگیری",
+            "region": [
+              91,
+              1093,
+              1417,
+              61
+            ]
+          },
+          {
+            "value": "987654321012",
+            "source": "digital",
+            "engine": "easyocr",
+            "raw_text": "987654321012",
+            "label": "شماره پیگیری",
+            "region": [
+              83,
+              1080,
+              1436,
+              85
+            ]
+          }
+        ]
+      },
+      "transfer_type": "paya",
+      "document_status": "success",
+      "dest_holder_name": {
+        "value": "مریم حسینی",
+        "confidence": "high",
+        "candidates": [
+          {
+            "value": "مریم حسینی",
+            "source": "digital",
+            "engine": "tesseract",
+            "raw_text": "مریم حسینی",
+            "role": "dest",
+            "region": [
+              91,
+              905,
+              1417,
+              57
+            ]
+          },
+          {
+            "value": "مریم حسینی",
+            "source": "digital",
+            "engine": "easyocr",
+            "raw_text": "مریم حسینی",
+            "role": "dest",
+            "region": [
+              81,
+              895,
+              1438,
+              78
+            ]
+          }
+        ]
+      },
+      "dest_bank": "Melli",
+      "source_name": {
+        "value": null,
+        "confidence": "low",
+        "candidates": []
+      },
+      "source_account": {
+        "value": null,
+        "confidence": "low",
+        "candidates": []
+      },
+      "amount_words": {
+        "value": null,
+        "confidence": "low",
+        "candidates": []
+      }
+    },
+    "tracking_number_normalized": "987654321012",
+    "matches": [
+      {
+        "line_id": "L-18",
+        "score": 0.9,
+        "fits": true,
+        "reasons": [
+          "AMOUNT_EXACT",
+          "IBAN_FULL_MATCH",
+          "NAME_MISMATCH"
+        ],
+        "currency_assumed": null
+      },
+      {
+        "line_id": "L-17",
+        "score": 0.3,
+        "fits": false,
+        "reasons": [
+          "AMOUNT_PARTIAL",
+          "IBAN_MISMATCH",
+          "NAME_MISMATCH"
+        ],
+        "currency_assumed": null
+      }
+    ],
+    "best_line_id": "L-18",
+    "suggested_route": "match",
+    "sender_question_fa": null,
+    "warnings": [],
+    "engines": {
+      "vlm": "skipped: no VLM provider configured (RR_VLM_PROVIDER)",
+      "tesseract": "ok",
+      "easyocr": "ok"
+    },
+    "processing_ms": 14849,
+    "debug": {
+      "image_kind": "screenshot",
+      "document_cropped": false,
+      "skew_deg": 0.0,
+      "printed_strip_box": null,
+      "quality": [],
+      "engines": {
+        "tesseract": {
+          "full_text": "وضعیت: موفق\nمبلغ: 2,000,000,000 JL‏\nشبای IR710170000000003456781234 ‘ase‏\nنام ذینفع: مریم حسینی\nشماره پیگیری: 987654321012\nتاریخ: 09:15 1405/08/24"
+        },
+        "easyocr": {
+          "full_text": "انتقال پایا\nوضعیت ' موفق\nمبلغ : 2,000,000,000 ریال\nشبای مقصد ' IR710170000000003456781234\nنام ذینفع : مریم حسینی\nشماره پیگیری : 987654321012\nتاریخ : 1405/08/24 09:15\nکارمزد : 5,000 ریال"
+        }
+      }
+    }
+  },
+  "failed_screenshot": {
+    "receipt_id": "7d4eb2e7-b066-4356-b046-fabdcc91f720",
+    "request_id": "1f898a36-20c7-453d-878d-bea8178fefbd",
+    "image": {
+      "sha256": "c1fc93cbf09a13133dcb6daced85d6fab1a1627bbf41ccacb3fd6b803d4c4015",
+      "phash": "9e1a60614f4f6337",
+      "width": 1080,
+      "height": 1920,
+      "format": "PNG",
+      "kind": "screenshot",
+      "flags": [
+        "SCREENSHOT_OF_SCREENSHOT"
+      ]
+    },
+    "fields": {
+      "amount_rial": {
+        "value": 4500000000,
+        "confidence": "high",
+        "candidates": [
+          {
+            "value": 4500000000,
+            "source": "digital",
+            "engine": "tesseract",
+            "raw_text": "4,500,000,000",
+            "region": [
+              91,
+              520,
+              1418,
+              56
+            ]
+          },
+          {
+            "value": 4500000000,
+            "source": "digital",
+            "engine": "easyocr",
+            "raw_text": "4,500,000,000",
+            "currency": "rial",
+            "region": [
+              80,
+              509,
+              1443,
+              80
+            ]
+          }
+        ]
+      },
+      "currency": "rial",
+      "amount_toman": 450000000,
+      "dest_iban": {
+        "value": "IR440120000000001234568550",
+        "partial": false,
+        "checksum_valid": true,
+        "bank": "Mellat",
+        "bank_fa": "ملت",
+        "confidence": "high",
+        "candidates": [
+          {
+            "value": "IR440120000000001234568550",
+            "source": "digital",
+            "engine": "tesseract",
+            "raw_text": "IR440120000000001234568550",
+            "role": "unknown",
+            "region": [
+              91,
+              712,
+              1417,
+              54
+            ]
+          },
+          {
+            "value": "IR440120000000001234568550",
+            "source": "digital",
+            "engine": "easyocr",
+            "raw_text": "440120000000001234568550",
+            "role": "dest",
+            "region": [
+              81,
+              703,
+              1439,
+              68
+            ]
+          }
+        ]
+      },
+      "paid_at": {
+        "jalali": "1405/08/24 09:15",
+        "iso": "2026-11-15T09:15:00+03:30",
+        "plausible": true,
+        "confidence": "high",
+        "candidates": [
+          {
+            "value": "1405/08/24 09:15",
+            "source": "digital",
+            "engine": "tesseract",
+            "raw_text": "1405/08/24 09:15",
+            "region": [
+              95,
+              1290,
+              1413,
+              56
+            ]
+          },
+          {
+            "value": "1405/08/24 09:15",
+            "source": "digital",
+            "engine": "easyocr",
+            "raw_text": "1405/08/24 09:15",
+            "region": [
+              84,
+              1278,
+              1439,
+              80
+            ]
+          }
+        ]
+      },
+      "tracking_number": {
+        "value": "987654321012",
+        "label": "شماره پیگیری",
+        "all": [
+          {
+            "value": "987654321012",
+            "label": "شماره پیگیری"
+          }
+        ],
+        "confidence": "high",
+        "candidates": [
+          {
+            "value": "987654321012",
+            "source": "digital",
+            "engine": "tesseract",
+            "raw_text": "987654321012",
+            "label": "شماره پیگیری",
+            "region": [
+              91,
+              1093,
+              1417,
+              61
+            ]
+          },
+          {
+            "value": "987654321012",
+            "source": "digital",
+            "engine": "easyocr",
+            "raw_text": "987654321012",
+            "label": "شماره پیگیری",
+            "region": [
+              83,
+              1080,
+              1436,
+              85
+            ]
+          }
+        ]
+      },
+      "transfer_type": "paya",
+      "document_status": "failed",
+      "dest_holder_name": {
+        "value": "مریم حسینی",
+        "confidence": "high",
+        "candidates": [
+          {
+            "value": "مریم حسینی",
+            "source": "digital",
+            "engine": "tesseract",
+            "raw_text": "مریم حسینی",
+            "role": "dest",
+            "region": [
+              91,
+              905,
+              1417,
+              57
+            ]
+          },
+          {
+            "value": "مریم حسینی",
+            "source": "digital",
+            "engine": "easyocr",
+            "raw_text": "مریم حسینی",
+            "role": "dest",
+            "region": [
+              81,
+              895,
+              1438,
+              78
+            ]
+          }
+        ]
+      },
+      "dest_bank": "Mellat",
+      "source_name": {
+        "value": null,
+        "confidence": "low",
+        "candidates": []
+      },
+      "source_account": {
+        "value": null,
+        "confidence": "low",
+        "candidates": []
+      },
+      "amount_words": {
+        "value": null,
+        "confidence": "low",
+        "candidates": []
+      }
+    },
+    "tracking_number_normalized": "987654321012",
+    "matches": [
+      {
+        "line_id": "L-17",
+        "score": 0.9,
+        "fits": true,
+        "reasons": [
+          "AMOUNT_EXACT",
+          "IBAN_FULL_MATCH",
+          "NAME_MISMATCH"
+        ],
+        "currency_assumed": null
+      },
+      {
+        "line_id": "L-18",
+        "score": 0.05,
+        "fits": false,
+        "reasons": [
+          "AMOUNT_OVER_REMAINING",
+          "IBAN_MISMATCH",
+          "NAME_MISMATCH"
+        ],
+        "currency_assumed": null
+      }
+    ],
+    "best_line_id": "L-17",
+    "suggested_route": "manager_review",
+    "sender_question_fa": null,
+    "warnings": [
+      "STATUS_NOT_SUCCESS"
+    ],
+    "engines": {
+      "vlm": "skipped: no VLM provider configured (RR_VLM_PROVIDER)",
+      "tesseract": "ok",
+      "easyocr": "ok"
+    },
+    "processing_ms": 15205,
+    "debug": {
+      "image_kind": "screenshot",
+      "document_cropped": false,
+      "skew_deg": 0.0,
+      "printed_strip_box": null,
+      "quality": [],
+      "engines": {
+        "tesseract": {
+          "full_text": "مبلغ: 4,500,000,000 Ju,‏\nشبای IR440120000000001234568550 ‘Laie‏\nنام ذینفع: مریم حسینی\nشماره پیگیری: 987654321012\nتاریخ: 09:15 1405/08/24"
+        },
+        "easyocr": {
+          "full_text": "انتقال پایا\nوضعيت : ناموفق\nمبلغ : 4,500,000,000 ریال\nشبای مقصد ' [R440120000000001234568550\nنام ذینفع : مریم حسینی\nشماره پیگیری : 987654321012\nتاریخ : 1405/08/24 09:15\nکارمزد : 5,000 ریال"
+        }
+      }
+    }
+  }
+}

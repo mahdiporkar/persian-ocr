@@ -1,0 +1,31 @@
+{
+  "synthetic": true,
+  "evaluated_at": "2026-11-15T12:00:00+03:30",
+  "amount_rial": 2000000000,
+  "currency": "rial",
+  "dest_iban": "IR710170000000003456781234",
+  "paid_at_jalali": "1405/08/24 09:15",
+  "tracking_number": "987654321012",
+  "transfer_type": "paya",
+  "document_status": "success",
+  "sources": {
+    "amount_rial": "digital"
+  },
+  "expected_lines": [
+    {
+      "line_id": "L-17",
+      "iban": "IR440120000000001234568550",
+      "holder_name": "علی کریمی",
+      "amount_toman": 450000000,
+      "remaining_toman": 450000000
+    },
+    {
+      "line_id": "L-18",
+      "iban": "IR710170000000003456781234",
+      "holder_name": "سارا محمدی",
+      "amount_toman": 200000000,
+      "remaining_toman": 200000000
+    }
+  ],
+  "correct_line_id": "L-18"
+}
