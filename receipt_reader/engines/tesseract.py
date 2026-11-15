@@ -97,7 +97,7 @@ class TesseractEngine(Engine):
         out.debug["full_text"] = hints.full_text
 
         if prep.strip_gray is not None and prep.strip_box is not None:
-            bx, by = prep.strip_box[0], prep.strip_box[1]
+            bx, by = prep.strip_origin or (prep.strip_box[0], prep.strip_box[1])
             src_strip = lambda conf, bbox: "printed"  # noqa: E731
             slines = self._lines(prep.strip_gray, "strip", src_strip, offset=(bx, by), psm=6, scale=2.0)
             scands, shints = parse_lines(slines, self.name)

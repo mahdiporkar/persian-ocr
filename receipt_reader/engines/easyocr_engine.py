@@ -107,7 +107,7 @@ class EasyOCREngine(Engine):
         out.status_votes = hints.status_votes
         if prep.strip_gray is not None and prep.strip_box is not None:
             sl = self._lines(prep.strip_gray, "strip", lambda c, b: "printed",
-                             offset=tuple(prep.strip_box[:2]), scale=2.0)
+                             offset=prep.strip_origin or tuple(prep.strip_box[:2]), scale=2.0)
             scands, shints = parse_lines(sl, self.name)
             out.candidates += scands
             out.debug["strip_text"] = shints.full_text

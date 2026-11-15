@@ -115,3 +115,21 @@ def test_no_api_key_configured():
     c = TestClient(create_app(s, ReceiptReader(s, {})))
     r = c.post("/v1/receipts/read", headers=H, files={"image": ("r.png", _png(), "image/png")})
     assert r.status_code == 503
+
+
+def test_oversized_body_rejected_before_parsing(client):
+    big = b"0" * (11 * 1024 * 1024)
+    r = client.post("/v1/receipts/read", headers=H, files={"image": ("r.png", big, "image/png")})
+    assert r.status_code == 413 and r.json()["error"] == "FILE_TOO_LARGE"
+
+
+@pytest.mark.parametrize("bad", [
+    [{"line_id": "L-1", "amount_toman": 0}],
+    [{"line_id": "L-1", "amount_toman": -5}],
+    [{"line_id": "", "amount_toman": 5}],
+    [{"line_id": "L-1", "amount_toman": 5, "remaining_toman": -1}],
+])
+def test_expected_lines_validation(client, bad):
+    r = client.post("/v1/receipts/read", headers=H, files={"image": ("r.png", _png(), "image/png")},
+                    data={"expected_lines": json.dumps(bad)})
+    assert r.status_code == 400

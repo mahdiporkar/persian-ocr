@@ -96,11 +96,11 @@ class Fields(BaseModel):
 
 
 class ExpectedLine(BaseModel):
-    line_id: str
+    line_id: str = Field(min_length=1, max_length=100)
     iban: Optional[str] = None
     holder_name: Optional[str] = None
-    amount_toman: int
-    remaining_toman: Optional[int] = None
+    amount_toman: int = Field(gt=0)
+    remaining_toman: Optional[int] = Field(default=None, ge=0)
 
 
 class LineMatch(BaseModel):

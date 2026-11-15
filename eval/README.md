@@ -76,6 +76,17 @@ python eval/run_eval.py eval/real --engines vlm,tesseract
 
 ## Collecting the real set
 
+```bash
+python scripts/label_helper.py strip-gps eval/real   # remove GPS location (keeps orientation/Software EXIF)
+python scripts/label_helper.py todo eval/real        # <stem>.todo.json skeletons for unlabelled images
+python scripts/label_helper.py check eval/real       # validate labels before running the eval
+```
+
+`todo` puts the reader's own output under `_reader_suggestion` and leaves every ground-truth field
+`null`. Fill the fields **from the image**, not from the suggestion — copying the reader's answer
+makes the evaluation measure nothing. Rename to `<stem>.json` when done. `check` catches typos
+(an IBAN that fails mod-97, a float amount, a bad date, a `correct_line_id` not in the lines).
+
 * 50 receipts is enough to start; 150+ before trusting thresholds. Keep the real mix (mostly paper
   SATNA/PAYA forms) and deliberately include the hard ones: wrong handwriting, rial/toman unclear,
   failed transfers, blurry photos, two lines with the same IBAN.

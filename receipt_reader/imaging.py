@@ -283,6 +283,7 @@ class Prepared:
     cropped: bool
     skew: float
     quality: list[str]
+    strip_origin: Optional[tuple[int, int]] = None  # top-left of the strip crop (before 2x zoom)
 
 
 def prepare(loaded: LoadedImage) -> Prepared:
@@ -298,13 +299,16 @@ def prepare(loaded: LoadedImage) -> Prepared:
     gray = enhance_for_ocr(bgr)
     box = find_printed_strip(gray) if loaded.kind != "screenshot" else None
     strip = None
+    origin = None
     if box:
         x, y, w, h = box
         pad = 10
         y0, y1 = max(0, y - pad), min(gray.shape[0], y + h + pad)
         x0, x1 = max(0, x - pad), min(gray.shape[1], x + w + pad)
         strip = cv2.resize(gray[y0:y1, x0:x1], None, fx=2.0, fy=2.0, interpolation=cv2.INTER_CUBIC)
+        origin = (x0, y0)
     return Prepared(oriented=loaded.pil, document=bgr, ocr_gray=gray, strip_box=box, strip_gray=strip,
+                    strip_origin=origin,
                     cropped=cropped, skew=skew, quality=quality_flags(bgr))
 
 

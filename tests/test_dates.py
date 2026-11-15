@@ -34,3 +34,8 @@ def test_plausibility():
     assert is_plausible(parse_datetime("1405/08/21 13:00"), NOW, 3)
     assert is_plausible(parse_datetime("1405/08/22"), NOW, 3)              # date only
     assert not is_plausible(parse_datetime("1405/08/25"), NOW, 3)          # tomorrow
+
+
+def test_date_after_dotted_amount_is_found():
+    p = parse_datetime("4.500.000 ریال تاریخ 1405/08/24 11:42")
+    assert p is not None and p.jalali == "1405/08/24 11:42"

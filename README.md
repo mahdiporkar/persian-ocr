@@ -1,5 +1,7 @@
 # Receipt Reader (فیش‌خوان) — settlement bot component
 
+[![tests](https://github.com/mahdiporkar/persian-ocr/actions/workflows/tests.yml/badge.svg)](https://github.com/mahdiporkar/persian-ocr/actions/workflows/tests.yml)
+
 Reads a photo of an Iranian bank transfer receipt (فیش) and tells the settlement bot which of
 the debtor's open lines it pays, and how sure it is. It is **one component** of the Telegram
 settlement bot for the آبشده business: it reads, cross-checks and suggests. The bot and a human
@@ -42,14 +44,17 @@ uvicorn receipt_reader.api:app_factory --factory --port 8080
 # open http://localhost:8080/docs
 ```
 
-Docker:
+Docker (verified: builds, runs as non-root, serves `/v1/health` and `/v1/receipts/read`; image ≈ 1 GB
+with Tesseract and the Persian model; add `easyocr` yourself if wanted — it pulls PyTorch):
 
 ```bash
 docker build -t receipt-reader .
 docker run --env-file .env -p 8080:8080 receipt-reader
 ```
 
-Tests (unit + API + end-to-end on synthetic images through real Tesseract):
+Tests (unit + API + image handling + end-to-end on synthetic images through real Tesseract). They
+run on every push via GitHub Actions (Ubuntu + Tesseract `fas`), followed by the eval harness on the
+synthetic set, which fails the build on any dangerous error:
 
 ```bash
 pytest -q

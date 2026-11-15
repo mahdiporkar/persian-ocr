@@ -1,0 +1,28 @@
+name: tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Tesseract + Persian model + fonts
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends tesseract-ocr tesseract-ocr-eng fonts-dejavu-core
+          TD=$(dirname "$(find /usr/share/tesseract-ocr -name eng.traineddata | head -1)")
+          sudo curl -fsSL -o "$TD/fas.traineddata" https://github.com/tesseract-ocr/tessdata_best/raw/main/fas.traineddata
+          tesseract --list-langs
+      - run: pip install -r requirements-dev.txt pillow-heif
+      - run: python -m pytest -q
+      - name: eval harness on the synthetic set (plumbing check)
+        env:
+          RR_ENGINES: tesseract
+        run: python eval/run_eval.py eval/synthetic

@@ -42,6 +42,13 @@ def create_app(settings: Optional[Settings] = None, reader: Optional[ReceiptRead
     async def request_id_mw(request: Request, call_next):
         rid = request.headers.get("X-Request-ID") or str(uuid.uuid4())
         request.state.request_id = rid
+        # refuse oversized bodies before the multipart parser reads them
+        limit = int(app.state.settings.max_upload_mb * 1024 * 1024) + 256 * 1024  # + form overhead
+        cl = request.headers.get("content-length")
+        if request.method == "POST" and cl and cl.isdigit() and int(cl) > limit:
+            return JSONResponse(status_code=413, headers={"X-Request-ID": rid},
+                                content=ErrorResponse(error="FILE_TOO_LARGE", request_id=rid,
+                                                      detail=f"Request is larger than {app.state.settings.max_upload_mb} MB.").model_dump())
         response = await call_next(request)
         response.headers["X-Request-ID"] = rid
         return response

@@ -42,9 +42,14 @@ def parse_datetime(text: Optional[str]) -> Optional[ParsedDate]:
     if not text:
         return None
     t = normalize_text(text)
-    m = _DATE_RE.search(t)
-    if not m:
-        return None
+    for m in _DATE_RE.finditer(t):
+        p = _parse_match(t, m)
+        if p is not None:
+            return p
+    return None
+
+
+def _parse_match(t: str, m: re.Match) -> Optional[ParsedDate]:
     a, b, c = m.group(1), m.group(2), m.group(3)
     y = mo = d = None
     if len(a) == 4:
