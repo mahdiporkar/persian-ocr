@@ -12,7 +12,7 @@ from typing import Optional
 
 from .dates import parse_datetime, _TIME_RE
 from .iban import detect_bank_names, find_ibans
-from .normalize import LABELS, find_labels, normalize_text, parse_amount_digits
+from .normalize import LABELS, find_labels, label_spans, normalize_text, parse_amount_digits
 from .numwords import parse_persian_number_words
 from .schema import Candidate
 
@@ -32,16 +32,22 @@ class ParseHints:
     status_votes: dict[str, int] = field(default_factory=dict)
     bank_codes_named: set[str] = field(default_factory=set)
     full_text: str = ""
+    issuer_banks: set[str] = field(default_factory=set)
 
 
-_AMOUNT_NUM_RE = re.compile(r"(?<![\d/:])\d{1,3}(?:[,.' ]\d{3})+(?![\d/:])|(?<![\d/:])\d{4,16}(?![\d/:])")
+# not part of a date or time ("11:45", "1405/08/23"), but "مبلغ کل:2,400,000,000" (label colon) is fine
+_AMOUNT_NUM_RE = re.compile(r"(?<![\d/])(?<!\d:)\d{1,3}(?:[,.' ]\d{3})+(?![\d/]|:\d)"
+                            r"|(?<![\d/])(?<!\d:)\d{4,16}(?![\d/]|:\d)")
 # tracking numbers: 5-30 digits, optionally hyphen-grouped ("123-456789-0"); never digits
 # taken out of a hex transaction id such as "a1b2c3d4e5f6"
 _LONG_DIGITS_RE = re.compile(r"(?<![\dA-Za-z\-])\d[\d\-]{3,40}\d(?![\dA-Za-z])")
 # card numbers as printed: full or masked 16 digits, or a short masked form "**** 6120"
 _CARD_RE = re.compile(r"(?<![\dA-Za-z])\d{4}[\s\-_]*[\dxX*•]{2,4}[\s\-_]*[\dxX*•]{4}[\s\-_]*\d{4}(?!\d)"
                       r"|[*xX•]{3,}[\s\-_:]*\d{4}(?!\d)")
-_ACCOUNT_RE = re.compile(r"(?<![\dA-Za-z])\d[\d\-]{6,22}\d(?![\dA-Za-z])")
+_ACCOUNT_RE = re.compile(r"(?<![\dA-Za-z])\d[\d\-.]{6,22}\d(?![\dA-Za-z])")
+# masked account as printed by bank apps: "0104 1XXXX 4003"
+_MASKED_ACCOUNT_RE = re.compile(r"(?<![\dA-Za-z])\d{2,}[\s\-]*[xX*•]{2,}[\s\-]*\d{2,}(?![\dA-Za-z])")
+HEADER_LINES, FOOTER_LINES = 4, 3  # where the issuing bank's name/logo text is printed
 _SCALE_WORD_RE = re.compile(r"(هزار|میلیون|ملیون|میلیارد|ملیارد|صد|ریال|تومان)")
 
 _TRACKING_KEYS = ("tracking", "reference", "trace")
@@ -79,6 +85,15 @@ def _after_label(text: str, keys: tuple[str, ...]) -> str:
     if best is None:
         return t
     return t[best[1]:].lstrip(" :：-=\t.")
+
+
+_NOT_ACCOUNT_OWNERS = {"other_field", "national_id", "amount", "tracking", "reference", "trace", "date", "time"}
+
+
+def _owner(spans: list[tuple[int, int, str]], pos: int) -> Optional[str]:
+    """The label a value at `pos` belongs to: the nearest label that ends before it."""
+    before = [k for a, b, k in spans if b <= pos and k not in ("rial", "toman")]
+    return before[-1] if before else None
 
 
 def _currency_of(text: str) -> Optional[str]:
@@ -123,6 +138,11 @@ def repair_rtl_numbers(text: str) -> str:
 
 
 def _clean_name(text: str) -> Optional[str]:
+    # a name ends at the next field: «علی احمدی * نوع حساب: جاری», «… | …», «… شبای مقصد: …»
+    text = re.split(r"[*|•؛;]", text)[0]
+    nxt = [a for a, _, k in label_spans(normalize_text(text)) if k not in ("rial", "toman") and a > 0]
+    if nxt:
+        text = normalize_text(text)[:min(nxt)]
     t = re.sub(r"[\d:：\-_/.,()|»«*]+", " ", text)
     for key in ("to_account", "from_account", "iban", "account_no", "account_ref", "holder", "card_no", "bank",
                 "beneficiary", "payer"):
@@ -143,6 +163,8 @@ def parse_lines(lines: list[TextLine], engine: str) -> tuple[list[Candidate], Pa
     section: Optional[str] = None               # "sender" | "receiver", from «از …» / «به …» labels
     section_age = 0
     date_cands_by_pass: dict[str, list[int]] = {}
+    unsided: list[tuple[int, str, TextLine]] = []   # (position, name, line) of «صاحب حساب» without a side
+    beneficiary_at: Optional[int] = None            # position of the first explicit «ذینفع» name
     times_by_pass: dict[str, list[str]] = {}
 
     for ln in lines:
@@ -171,6 +193,16 @@ def parse_lines(lines: list[TextLine], engine: str) -> tuple[list[Candidate], Pa
             if section_age > SECTION_TTL:
                 section = None
         side = line_side or section
+        # Values (IBAN, account, card) inherit the open «از …/به …» section only on a line with no
+        # label text of its own: a line like «IR25… بلک مقصل» carries its own (misread) label,
+        # and with two-column layouts the section above may belong to the other column.
+        spans = label_spans(t)
+        rest = list(t)
+        for a, b, _ in spans:
+            rest[a:b] = " " * (b - a)
+        unknown_words = [w for w in re.findall(r"[؀-ۿ]{3,}", "".join(rest)) if not detect_bank_names(w)]
+        foreign_label = any(k == "other_field" for _, _, k in spans)  # «شعبه صادره …»: another field's line
+        value_side = line_side or (section if not (unknown_words or foreign_label) else None)
 
         def add(field_name, value, raw_text, **kw):
             cands.append(Candidate(field=field_name, value=value, raw_text=raw_text, source=src,
@@ -195,7 +227,7 @@ def parse_lines(lines: list[TextLine], engine: str) -> tuple[list[Candidate], Pa
         # ---- IBAN ----
         consumed: list[tuple[int, int]] = []
         for raw_iban, info in find_ibans(work, iban_label="iban" in ctx):
-            role = {"receiver": "dest", "sender": "source"}.get(side or "", "unknown")
+            role = {"receiver": "dest", "sender": "source"}.get(value_side or "", "unknown")
             add("iban", info.value, raw_iban, role=role)
             i = work.upper().find(raw_iban.upper())
             if i >= 0:
@@ -203,9 +235,18 @@ def parse_lines(lines: list[TextLine], engine: str) -> tuple[list[Candidate], Pa
         work = _strip_spans(work, consumed)
         work_cards = _strip_spans(work_cards, consumed)
 
+        # ---- masked account numbers («حساب مبدا ۰۱۰۴۱XXXX۴۰۰۳») are accounts, not cards ----
+        is_account_line = bool(re.search(r"حساب|سپرده", t)) and "کارت" not in t
+        if value_side and is_account_line and "card_no" not in ctx:
+            for m in list(_MASKED_ACCOUNT_RE.finditer(work_cards)):
+                add(f"{value_side}_account", re.sub(r"[\s\-]", "", m.group(0)).upper().replace("*", "X"),
+                    m.group(0).strip())
+                work = _blank(work, m)
+                work_cards = _blank(work_cards, m)
+
         # ---- card numbers (downstream keeps only the last 4 digits) ----
-        if "card_no" in ctx or re.search(r"[xX*•]{2}", work_cards):
-            card_side = side
+        if "card_no" in ctx or (re.search(r"[xX*•]{2}", work_cards) and not is_account_line):
+            card_side = value_side
             if card_side is None and "card_no" in ctx:
                 card_side = "sender"  # «شماره کارت» before any «مقصد» line is the payer's card
             for m in list(_CARD_RE.finditer(work_cards)):
@@ -230,17 +271,19 @@ def parse_lines(lines: list[TextLine], engine: str) -> tuple[list[Candidate], Pa
             label = _label_surface(label_text, tr_keys[0]) or tr_keys[0]
             for m in list(_LONG_DIGITS_RE.finditer(work)):
                 digits = m.group(0).replace("-", "")
+                if len(spans) > 1 and _owner(spans, m.start()) not in (None, *_TRACKING_KEYS):
+                    continue  # «… * کاربر: 323659 * …»: that number belongs to another label
                 if len(digits) >= 5:
                     add("tracking_number", digits, m.group(0), label=label)
                     work = _blank(work, m)
 
         # ---- account numbers of a party ----
-        if side and ctx & {"account_ref", "account_no", "from_account", "to_account"} \
+        if value_side and ctx & {"account_ref", "account_no", "from_account", "to_account"} \
                 and not ctx & {"amount", "tracking", "reference", "trace", "deposit_id"}:
             for m in list(_ACCOUNT_RE.finditer(work)):
-                digits = m.group(0).replace("-", "")
-                if 8 <= len(digits) <= 20:
-                    add(f"{side}_account", digits, m.group(0))
+                digits = re.sub(r"[\-.]", "", m.group(0))
+                if 8 <= len(digits) <= 20 and _owner(spans, m.start()) not in _NOT_ACCOUNT_OWNERS:
+                    add(f"{value_side}_account", digits, m.group(0))
                     work = _blank(work, m)
 
         # ---- amounts ----
@@ -256,9 +299,14 @@ def parse_lines(lines: list[TextLine], engine: str) -> tuple[list[Candidate], Pa
                         # label came from the previous line: accept only a properly grouped amount,
                         # not any long digit run (that is usually the next field's reference number)
                         continue
+                    if "amount" in labels and \
+                            _owner(spans, m.start()) not in (None, "amount", "amount_words", "rial", "toman"):
+                        continue  # «مبلغ کل … کاربر تأییدکننده 3778»: 3778 is the operator's id
                     val = parse_amount_digits(m.group(0))
                     if val is None or val < 1000:
                         continue
+                    if val < 10000 and not re.search(r"[,.' ]", m.group(0).strip()):
+                        continue  # an ungrouped 4-digit number is an id, not a rial amount
                     add("amount", val, m.group(0).strip(), currency=cur,
                         label=_label_surface(label_text, "amount") if has_amount_label else None)
             # amount in words
@@ -269,6 +317,13 @@ def parse_lines(lines: list[TextLine], engine: str) -> tuple[list[Candidate], Pa
                     cands.append(Candidate(field="amount", value=w.value, raw_text=tail, source="words",
                                            engine=engine, pass_id=ln.pass_id, region=ln.bbox,
                                            currency=w.currency, ocr_conf=ln.conf, label="مبلغ به حروف"))
+
+        # ---- purpose of the transfer («بابت خرید کالا», «توضیحات: قرض») ----
+        if "purpose" in labels:
+            tail = re.sub(r"[\d:：\-_/.,()|»«*]+", " ", _after_label(t, ("purpose",)))
+            tail = " ".join(w for w in tail.split() if re.search(r"[؀-ۿ]", w))
+            if 2 <= len(tail) <= 60:
+                add("purpose", tail, tail)
 
         # ---- bank named for a party (only on the line that names the side) ----
         if line_side and ("bank" in ctx or "card_no" in ctx):
@@ -288,9 +343,16 @@ def parse_lines(lines: list[TextLine], engine: str) -> tuple[list[Candidate], Pa
                 name_side, key = side, "holder"
             elif "دارنده" in t:
                 name_side, key = "receiver", "holder"
+            else:
+                # «صاحب حساب» with no «از/به» section: decided after the whole document is read
+                nm = _clean_name(_after_label(t, ("holder",)))
+                if nm:
+                    unsided.append((len(cands), nm, ln))
         if name_side:
             name = _clean_name(_after_label(t, (key,)))
             if name:
+                if key == "beneficiary" and beneficiary_at is None:
+                    beneficiary_at = len(cands)
                 add(f"{name_side}_name", name, name, role="dest" if name_side == "receiver" else "source")
 
         # label-only line: carry it to the next line
@@ -301,6 +363,21 @@ def parse_lines(lines: list[TextLine], engine: str) -> tuple[list[Candidate], Pa
         else:
             pending_label = None
             pending_label_text = ""
+
+    # A teller strip such as Mellat's lists «شماره حساب … صاحب حساب: X» and then «ذینفع: Y»:
+    # when the payee is named explicitly AFTER an unsided account holder, that holder is the payer.
+    if beneficiary_at is not None:
+        for pos, nm, ln in unsided:
+            if pos < beneficiary_at:
+                cands.append(Candidate(field="sender_name", value=nm, raw_text=nm, source=ln.source, engine=engine,
+                                       pass_id=ln.pass_id, region=ln.bbox, ocr_conf=ln.conf, role="source"))
+
+    # The bank that issued the receipt (name in the header / footer, outside any party line)
+    # is the payer's bank on bank-issued receipts; used only as a low-weight fallback.
+    texts = [l for l in lines if normalize_text(l.text)]
+    for ln in texts[:HEADER_LINES] + texts[-FOOTER_LINES:]:
+        if not find_labels(ln.text) & {"to_account", "from_account", "beneficiary", "payer", "holder"}:
+            hints.issuer_banks |= detect_bank_names(ln.text)
 
     # attach a stand-alone time to a date-only candidate of the same pass
     for pass_id, idxs in date_cands_by_pass.items():

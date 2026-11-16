@@ -72,7 +72,9 @@ def detect_bank_names(text: str) -> set[str]:
     for code, info in bank_table().items():
         for alias in info.get("aliases", []):
             a = normalize_text(alias).lower()
-            if a and (re.search(rf"\b{re.escape(a)}\b", t) if a.isascii() else a in t):
+            # whole words only: «بانک دی» must not match inside «بانک دیگر»
+            if a and (re.search(rf"\b{re.escape(a)}\b", t) if a.isascii()
+                      else re.search(rf"(?<![؀-ۿ]){re.escape(a)}(?![؀-ۿ])", t)):
                 found.add(code)
                 break
     return found

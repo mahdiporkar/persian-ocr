@@ -12,7 +12,7 @@ Exact rules: README.md, "Confidence rules". Key principles (owner decisions):
 from __future__ import annotations
 
 from collections import Counter, defaultdict
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Iterable, Optional
 
@@ -51,6 +51,7 @@ def _pub(cs: Iterable[Candidate]) -> list[dict]:
 class Hints:
     transfer_votes: dict[str, int]
     status_votes: dict[str, int]
+    issuer_banks: set[str] = field(default_factory=set)
 
 
 class Resolver:
@@ -358,6 +359,23 @@ def resolve(cands: list[Candidate], hints: Hints, settings: Settings, now: datet
     f.receiver = r.party(cands, "receiver")
     if f.dest_iban.value:
         f.receiver.iban = TextField(value=f.dest_iban.value, confidence=f.dest_iban.confidence)
+    # a party's bank not named on the document: from its checksum-valid IBAN's bank code
+    if f.receiver.bank.value is None and f.dest_iban.bank and f.dest_iban.checksum_valid:
+        f.receiver.bank = TextField(value=f.dest_iban.bank, confidence=f.dest_iban.confidence,
+                                    candidates=[{"value": f.dest_iban.bank, "source": "iban_bank_code"}])
+    if f.sender.bank.value is None and f.sender.iban.value:
+        info = parse_iban(f.sender.iban.value)
+        if info and info.checksum_valid and info.bank:
+            f.sender.bank = TextField(value=info.bank, confidence=f.sender.iban.confidence,
+                                      candidates=[{"value": info.bank, "source": "iban_bank_code"}])
+    # ... else the bank that issued the receipt (header/footer), which on bank-issued receipts
+    # is the payer's bank: only ever "low", and only when exactly one bank is named there
+    if f.sender.bank.value is None and len(hints.issuer_banks) == 1:
+        info = bank_for_code(next(iter(hints.issuer_banks)))
+        if info:
+            f.sender.bank = TextField(value=info["en"], confidence="low",
+                                      candidates=[{"value": info["en"], "source": "issuer_header"}])
+    f.purpose = r.text_field(cands, "purpose")
     words = [c for c in cands if c.field == "amount" and c.source == "words"]
     if words:
         f.amount_words = TextField(value=words[0].raw_text, confidence="medium" if engines_of(words) > 1 else "low",

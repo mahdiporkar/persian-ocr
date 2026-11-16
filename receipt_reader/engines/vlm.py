@@ -37,7 +37,7 @@ log = logging.getLogger("receipt_reader.vlm")
 
 FIELDS = ["amount", "amount_words", "iban", "paid_at", "tracking_number",
           "sender_name", "sender_account", "sender_card", "sender_bank",
-          "receiver_name", "receiver_account", "receiver_card", "receiver_bank"]
+          "receiver_name", "receiver_account", "receiver_card", "receiver_bank", "purpose"]
 
 _NULLABLE_STR = {"type": ["string", "null"]}
 _BOX = {"type": ["array", "null"], "items": {"type": "integer"}}
@@ -89,11 +89,13 @@ Transcribe — do not interpret or correct. Report every reading you can see for
 - paid_at: the transaction date and time as printed (تاریخ / ساعت), copied exactly.
 - tracking_number: every tracking/reference number (شماره پیگیری، کد پیگیری، شماره مرجع، کد رهگیری)
   with its label copied into `label`. Account numbers and card numbers are NOT tracking numbers.
-- sender_* = the payer side (از حساب، از کارت، مبدا، برداشت از، واریز کننده);
-  receiver_* = the payee side (به حساب، به کارت، مقصد، واریز به، ذینفع، دارنده کارت).
+- sender_* = the payer side (از حساب، از کارت، مبدا، سپرده مبدا، برداشت از، واریز کننده، انتقال دهنده،
+  نام مشتری / شبای مشتری on a bank's own printout);
+  receiver_* = the payee side (به حساب، به کارت، مقصد، واریز به، ذینفع، دارنده کارت، متعلق به، صاحب حساب مقصد).
   sender_name / receiver_name: holder names; sender_account / receiver_account: account numbers
   (not IBANs); sender_card / receiver_card: card numbers exactly as printed, masked digits as 'x';
   sender_bank / receiver_bank: bank names written for that side. Only report what is visible.
+- purpose: the purpose / description of the transfer (بابت، توضیحات، شرح), copied exactly.
 
 If the same field appears more than once (e.g. handwritten on the form AND printed on the teller
 strip), report EACH occurrence as a separate reading. Never merge or choose between them.
@@ -347,6 +349,8 @@ def reading_to_candidates(r: dict, engine: str, pass_id: str, size, default_src:
     if field in ("sender_card", "receiver_card"):
         d = digits_only(raw)
         return [Candidate(field=field, value=raw, source=src, role=side_role, **common)] if len(d) >= 4 else []
+    if field == "purpose":
+        return [Candidate(field="purpose", value=raw, source=src, **common)]
     if field in ("sender_bank", "receiver_bank"):
         from ..iban import detect_bank_names
         return [Candidate(field=field, value=code, source=src, role=side_role, **common)

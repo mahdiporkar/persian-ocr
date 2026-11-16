@@ -117,14 +117,17 @@ def format_fa_number(n: int) -> str:
 # --- labels -----------------------------------------------------------------
 # Each key is a canonical label id; values are normalized surface forms.
 LABELS: dict[str, list[str]] = {
-    "payer": ["واریز کننده", "واریزکننده", "پرداخت کننده", "فرستنده", "نام واریز کننده"],
-    "beneficiary": ["ذینفع", "ذی نفع", "گیرنده", "صاحب حساب مقصد", "نام ذینفع", "دریافت کننده"],
+    "payer": ["واریز کننده", "واریزکننده", "پرداخت کننده", "فرستنده", "نام واریز کننده", "انتقال دهنده",
+              "انتقال‌دهنده", "نام مشتری", "صاحب حساب مبدا"],
+    "beneficiary": ["ذینفع", "ذی نفع", "گیرنده", "صاحب حساب مقصد", "نام ذینفع", "دریافت کننده", "متعلق به",
+                    "صاحب سپرده مقصد"],
     # section markers: everything after them (until the other marker) is about that party
     "to_account": ["به حساب", "حساب مقصد", "شبای مقصد", "شماره شبای مقصد", "مقصد", "شبا مقصد", "واریز به",
+                   "مقصل",  # common OCR misread of «مقصد» (not a Persian word)
                    "به کارت", "به بانک"],
     "from_account": ["از حساب", "حساب مبدا", "مبدا", "شبای مبدا", "حساب برداشت", "برداشت از", "از کارت",
-                     "از بانک"],
-    "holder": ["دارنده کارت", "به نام", "صاحب حساب", "نام صاحب حساب"],
+                     "از بانک", "سپرده مبدا", "شبای مشتری", "حساب مشتری", "نبای مشتری"],
+    "holder": ["دارنده کارت", "به نام", "صاحب حساب", "نام صاحب حساب", "صاحبان حساب"],
     "account_ref": ["به شماره", "شماره حساب", "حساب شماره"],
     "bank": ["بانک"],
     "iban": ["شماره شبا", "شبا", "iban", "sheba", "شناسه شبا"],
@@ -139,7 +142,8 @@ LABELS: dict[str, list[str]] = {
     # OCR often confuses پ/ب and ی/ک at the word end: include the common misreads
     "tracking": ["شماره پیگیری", "کد پیگیری", "پیگیری", "بیگیری", "پیگیرک", "بیگیرک", "پیگیر", "tracking"],
     "reference": ["شماره مرجع", "کد مرجع", "مرجع", "reference", "ref"],
-    "trace": ["شماره ارجاع", "کد رهگیری", "شماره رهگیری", "شماره تراکنش", "شناسه تراکنش", "شماره سند"],
+    "trace": ["شماره ارجاع", "کد رهگیری", "شماره رهگیری", "شماره تراکنش", "شناسه تراکنش", "شماره سند",
+              "شناسه دستور پرداخت", "شماره دستور پرداخت"],
     "date": ["تاریخ", "date", "تاریخ تراکنش", "تاریخ انتقال"],
     "time": ["ساعت", "زمان", "time"],
     "satna": ["ساتنا", "satna"],
@@ -151,10 +155,32 @@ LABELS: dict[str, list[str]] = {
     "pending": ["در انتظار", "در حال پردازش", "در جریان", "pending", "ثبت شد"],
     "balance": ["مانده", "موجودی", "مانده حساب", "balance"],
     "fee": ["کارمزد", "fee", "هزینه"],
+    "purpose": ["بابت", "توضیحات", "شرح انتقال"],
+    # fields that carry numbers but are none of ours: a number right after them is theirs
+    "other_field": ["کاربر", "کد شعبه", "شعبه صادره", "تعداد کل", "تعداد", "تلفن", "کد پستی", "شماره شناسنامه",
+                    "شماره تماس", "کد اقتصادی"],
     "national_id": ["کد ملی", "شماره ملی", "شناسه ملی"],
 }
 
 _NORMALIZED_LABELS = {k: [normalize_text(v).lower() for v in vs] for k, vs in LABELS.items()}
+
+
+def label_spans(text: str) -> list[tuple[int, int, str]]:
+    """(start, end, label id) of every label occurrence in already-normalized text, longest
+    form first, non-overlapping, in text order."""
+    t = text.lower()
+    forms = sorted(((f, k) for k, fs in _NORMALIZED_LABELS.items() for f in fs if f), key=lambda x: -len(x[0]))
+    taken = [False] * len(t)
+    out = []
+    for f, k in forms:
+        pattern = rf"\b{re.escape(f)}\b" if f.isascii() else re.escape(f)
+        for m in re.finditer(pattern, t):
+            if any(taken[m.start():m.end()]):
+                continue
+            for i in range(m.start(), m.end()):
+                taken[i] = True
+            out.append((m.start(), m.end(), k))
+    return sorted(out)
 
 
 def find_labels(text: str) -> set[str]:

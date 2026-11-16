@@ -15,6 +15,7 @@ class EngineOutput:
     candidates: list[Candidate] = field(default_factory=list)
     transfer_votes: dict[str, int] = field(default_factory=dict)
     status_votes: dict[str, int] = field(default_factory=dict)
+    issuer_banks: set[str] = field(default_factory=set)       # bank codes named in header/footer
     printed_strip_box: Optional[list[int]] = None   # in Prepared.document coordinates
     suspected_editing: bool = False
     debug: dict = field(default_factory=dict)

@@ -14,6 +14,13 @@ TEHRAN = timezone(timedelta(hours=3, minutes=30))  # Iran has no DST since 2022
 
 _DATE_RE = re.compile(r"(?<!\d)(\d{2,4})\s*[/\-.]\s*(\d{1,2})\s*[/\-.]\s*(\d{1,4})(?!\d)")
 _TIME_RE = re.compile(r"(?<![\d/])([01]?\d|2[0-3])\s*:\s*([0-5]\d)(?:\s*:\s*([0-5]\d))?(?!\d)")
+JALALI_MONTHS = ("فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور",
+                 "مهر", "آبان", "آذر", "دی", "بهمن", "اسفند")
+_MONTH_ALT = "|".join(sorted((normalize_text(m) for m in JALALI_MONTHS), key=len, reverse=True))
+# «۲۳ آبان ۱۴۰۵», «۲۳آبان ۰۵»; the year may also stand after the time behind a bar, as in
+# «شنبه ۲۳ آبان ۱۴:۲۳ | ۰۵» (Saman app)
+_MONTH_DATE_RE = re.compile(rf"(?<!\d)(\d{{1,2}})\s*({_MONTH_ALT})(?![؀-ۿ])(?:\s*(\d{{4}}|\d{{2}})(?![\d:]))?")
+_BAR_YEAR_RE = re.compile(r"\|\s*(\d{2}|\d{4})(?![\d:])|(?<![\d:])(\d{2}|\d{4})\s*\|")
 
 
 @dataclass(frozen=True)
@@ -46,7 +53,34 @@ def parse_datetime(text: Optional[str]) -> Optional[ParsedDate]:
         p = _parse_match(t, m)
         if p is not None:
             return p
-    return None
+    return _parse_month_name(t)
+
+
+def _parse_month_name(t: str) -> Optional[ParsedDate]:
+    """«۲۳ آبان ۱۴۰۵ ۱۴:۲۳». Without a visible year nothing is returned (never guessed)."""
+    m = _MONTH_DATE_RE.search(t)
+    if not m:
+        return None
+    day = int(m.group(1))
+    month = [normalize_text(x) for x in JALALI_MONTHS].index(m.group(2)) + 1
+    year_s = m.group(3)
+    if year_s is None:
+        rest = t[:m.start()] + " " * (m.end() - m.start()) + t[m.end():]
+        b = _BAR_YEAR_RE.search(rest)
+        year_s = (b.group(1) or b.group(2)) if b else None
+    if year_s is None:
+        return None
+    year = int(year_s) + (1400 if len(year_s) == 2 else 0)
+    synthetic = f"{year:04d}/{month:02d}/{day:02d}"
+    tail = t[m.end():]
+    if m.group(3) is None:  # the year came from elsewhere: keep only the time for the tail
+        tm = _TIME_RE.search(t)
+        tail = " " + tm.group(0) if tm else ""
+    p = _parse_match(synthetic + tail, _DATE_RE.match(synthetic + tail))
+    if p is None:
+        return None
+    return ParsedDate(raw=m.group(0), jalali=p.jalali, calendar=p.calendar, iso=p.iso, dt=p.dt,
+                      date_only=p.date_only)
 
 
 def _parse_match(t: str, m: re.Match) -> Optional[ParsedDate]:

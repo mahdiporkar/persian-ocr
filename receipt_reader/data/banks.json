@@ -7,7 +7,7 @@
   "014": {"en": "Maskan", "fa": "مسکن", "aliases": ["مسکن", "maskan"]},
   "015": {"en": "Sepah", "fa": "سپه", "aliases": ["سپه", "sepah"]},
   "016": {"en": "Keshavarzi", "fa": "کشاورزی", "aliases": ["کشاورزی", "keshavarzi"]},
-  "017": {"en": "Melli", "fa": "ملی", "aliases": ["ملی ایران", "بانک ملی", "melli"]},
+  "017": {"en": "Melli", "fa": "ملی", "aliases": ["ملی ایران", "بانک ملی", "melli", "baambank"]},
   "018": {"en": "Tejarat", "fa": "تجارت", "aliases": ["تجارت", "tejarat"]},
   "019": {"en": "Saderat", "fa": "صادرات", "aliases": ["صادرات ایران", "بانک صادرات", "saderat"]},
   "020": {"en": "Tosee Saderat", "fa": "توسعه صادرات", "aliases": ["توسعه صادرات", "edbi"]},

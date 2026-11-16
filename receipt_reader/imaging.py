@@ -224,17 +224,73 @@ def estimate_skew(gray: np.ndarray) -> float:
         (cx, cy), (rw, rh), ang = cv2.minAreaRect(c)
         if max(rw, rh) < 80 or min(rw, rh) < 5:
             continue
-        if rw < rh:
+        if rw < rh:  # OpenCV reports a near-horizontal box with swapped sides as ~±90°
             ang = ang - 90
-        if ang > 45:
+        while ang > 45:
             ang -= 90
-        if ang < -45:
+        while ang <= -45:
             ang += 90
         if abs(ang) <= 15:
             angles.append(ang)
     if len(angles) < 3:
         return 0.0
     return float(np.median(angles))
+
+
+def text_direction(gray: np.ndarray) -> str:
+    """'horizontal' or 'vertical' text lines (photos taken sideways), from the shape of
+    the blobs that text lines form after smearing ink along both axes."""
+    h, w = gray.shape[:2]
+    s = 1000 / max(h, w)
+    small = cv2.resize(gray, (int(w * s), int(h * s))) if s < 1 else gray
+    thr = cv2.adaptiveThreshold(small, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY_INV, 25, 15)
+    score = {}
+    for name, k in (("horizontal", (15, 1)), ("vertical", (1, 15))):
+        blobs = cv2.morphologyEx(thr, cv2.MORPH_CLOSE, cv2.getStructuringElement(cv2.MORPH_RECT, k))
+        n, _, st, _ = cv2.connectedComponentsWithStats(blobs, 8)
+        long_side = st[1:, 2] if name == "horizontal" else st[1:, 3]
+        short_side = st[1:, 3] if name == "horizontal" else st[1:, 2]
+        ok = (long_side >= 60) & (short_side >= 4) & (short_side <= 40) & (long_side >= 4 * short_side)
+        score[name] = int(long_side[ok].sum())
+    return "vertical" if score["vertical"] > 1.8 * max(score["horizontal"], 1) else "horizontal"
+
+
+def _rot90(bgr: np.ndarray, cw_degrees: int) -> np.ndarray:
+    codes = {90: cv2.ROTATE_90_CLOCKWISE, 180: cv2.ROTATE_180, 270: cv2.ROTATE_90_COUNTERCLOCKWISE}
+    return cv2.rotate(bgr, codes[cw_degrees]) if cw_degrees in codes else bgr
+
+
+def _ocr_score(gray: np.ndarray) -> float:
+    """How readable an orientation is: summed confidence of confidently read words."""
+    import pytesseract  # optional; caller handles absence
+
+    h, w = gray.shape[:2]
+    s = 1400 / max(h, w)
+    g = cv2.resize(gray, (int(w * s), int(h * s))) if s < 1 else gray
+    d = pytesseract.image_to_data(g, lang="fas", config="--oem 1 --psm 6",
+                                  output_type=pytesseract.Output.DICT)
+    return float(sum(float(c) for t, c in zip(d["text"], d["conf"])
+                     if t and len(t.strip()) >= 2 and float(c) >= 60))
+
+
+def detect_orientation(bgr: np.ndarray) -> int:
+    """Clockwise rotation (0/90/180/270) that makes the text upright. Lines running
+    vertically -> 90 or 270; which one (and 0 vs 180) is decided by which reads better.
+    Returns 0 when it cannot be decided (no local OCR installed)."""
+    gray = cv2.cvtColor(bgr, cv2.COLOR_BGR2GRAY)
+    if text_direction(gray) == "horizontal":
+        candidates = (0, 180)
+    else:
+        candidates = (90, 270)
+    try:
+        scores = {c: _ocr_score(cv2.cvtColor(_rot90(bgr, c), cv2.COLOR_BGR2GRAY)) for c in candidates}
+    except Exception:
+        return 0
+    best = max(scores, key=scores.get)
+    other = min(scores, key=scores.get)
+    if candidates == (0, 180) and not scores[180] > 2 * scores[0] + 50:
+        return 0  # upright unless upside-down clearly reads better
+    return best if scores[best] > scores[other] else 0
 
 
 def rotate(bgr: np.ndarray, angle: float) -> np.ndarray:
@@ -253,8 +309,22 @@ def upscale(bgr: np.ndarray, min_width: int = 1600) -> np.ndarray:
     return cv2.resize(bgr, (int(w * f), int(h * f)), interpolation=cv2.INTER_CUBIC)
 
 
-def enhance_for_ocr(bgr: np.ndarray) -> np.ndarray:
+def flatten_illumination(gray: np.ndarray) -> np.ndarray:
+    """Divide out uneven lighting (shadows across a photographed sheet): estimate the paper
+    background with a closing larger than any glyph, then normalise every pixel by it.
+    Without this, a shadow over half the page makes global (Otsu) thresholding — used by
+    Tesseract and by the skew estimate — mark the whole shadow as ink."""
+    h, w = gray.shape[:2]
+    k = max(15, (min(h, w) // 40) | 1)
+    bg = cv2.morphologyEx(gray, cv2.MORPH_CLOSE, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (k, k)))
+    bg = cv2.GaussianBlur(bg, (k, k), 0)
+    return cv2.divide(gray, np.maximum(bg, 1), scale=255)
+
+
+def enhance_for_ocr(bgr: np.ndarray, flatten: bool = False) -> np.ndarray:
     gray = cv2.cvtColor(bgr, cv2.COLOR_BGR2GRAY)
+    if flatten:
+        gray = flatten_illumination(gray)
     clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
     gray = clahe.apply(gray)
     gray = cv2.fastNlMeansDenoising(gray, h=7)
@@ -284,19 +354,27 @@ class Prepared:
     skew: float
     quality: list[str]
     strip_origin: Optional[tuple[int, int]] = None  # top-left of the strip crop (before 2x zoom)
+    rotation: int = 0  # clockwise degrees applied to make the text upright (0/90/180/270)
 
 
 def prepare(loaded: LoadedImage) -> Prepared:
     bgr = to_cv(loaded.pil)
+    oriented = loaded.pil
+    turn = 0
+    if loaded.kind != "screenshot":  # photos of paper are often taken sideways
+        turn = detect_orientation(bgr)
+        if turn:
+            bgr = _rot90(bgr, turn)
+            oriented = loaded.pil.rotate(-turn, expand=True)  # PIL rotates counter-clockwise
     cropped = False
     if loaded.kind != "screenshot":
         bgr, cropped = crop_document(bgr)
     skew = 0.0
     if loaded.kind != "screenshot":  # screenshots are never skewed
-        skew = estimate_skew(cv2.cvtColor(bgr, cv2.COLOR_BGR2GRAY))
+        skew = estimate_skew(flatten_illumination(cv2.cvtColor(bgr, cv2.COLOR_BGR2GRAY)))
         bgr = rotate(bgr, skew)
     bgr = upscale(bgr)
-    gray = enhance_for_ocr(bgr)
+    gray = enhance_for_ocr(bgr, flatten=loaded.kind != "screenshot")
     box = find_printed_strip(gray) if loaded.kind != "screenshot" else None
     strip = None
     origin = None
@@ -307,8 +385,8 @@ def prepare(loaded: LoadedImage) -> Prepared:
         x0, x1 = max(0, x - pad), min(gray.shape[1], x + w + pad)
         strip = cv2.resize(gray[y0:y1, x0:x1], None, fx=2.0, fy=2.0, interpolation=cv2.INTER_CUBIC)
         origin = (x0, y0)
-    return Prepared(oriented=loaded.pil, document=bgr, ocr_gray=gray, strip_box=box, strip_gray=strip,
-                    strip_origin=origin,
+    return Prepared(oriented=oriented, document=bgr, ocr_gray=gray, strip_box=box, strip_gray=strip,
+                    strip_origin=origin, rotation=turn,
                     cropped=cropped, skew=skew, quality=quality_flags(bgr))
 
 

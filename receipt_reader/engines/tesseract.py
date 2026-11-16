@@ -94,6 +94,7 @@ class TesseractEngine(Engine):
         out.candidates.extend(cands)
         _merge(out.transfer_votes, hints.transfer_votes)
         _merge(out.status_votes, hints.status_votes)
+        out.issuer_banks |= hints.issuer_banks
         out.debug["full_text"] = hints.full_text
 
         if prep.strip_gray is not None and prep.strip_box is not None:

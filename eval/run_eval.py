@@ -39,7 +39,7 @@ from receipt_reader.schema import ExpectedLine  # noqa: E402
 
 IMAGE_EXT = {".jpg", ".jpeg", ".png", ".webp", ".heic"}
 FIELDS = ["amount_rial", "currency", "dest_iban", "paid_at", "tracking_number", "transfer_type", "document_status"]
-PARTY_FIELDS = [f"{side}_{k}" for side in ("sender", "receiver") for k in ("name", "card", "account", "bank")]
+PARTY_FIELDS = [f"{side}_{k}" for side in ("sender", "receiver") for k in ("name", "card", "account", "iban", "bank")]
 CONF_FIELDS = {"amount_rial": "amount_rial", "dest_iban": "dest_iban", "paid_at": "paid_at",
                "tracking_number": "tracking_number"}
 
@@ -55,7 +55,7 @@ def predicted(res) -> dict:
         "transfer_type": f.transfer_type if f.transfer_type != "unknown" else None,
         "document_status": f.document_status if f.document_status != "unknown" else None,
         **{f"{side}_{k}": _party_value(getattr(getattr(f, side), k).value, k)
-           for side in ("sender", "receiver") for k in ("name", "card", "account", "bank")},
+           for side in ("sender", "receiver") for k in ("name", "card", "account", "iban", "bank")},
     }
 
 
@@ -68,6 +68,9 @@ def _party_value(v, kind):
         return digits_only(v)
     if kind == "name":
         return normalize_name(v)
+    if kind == "iban":
+        info = parse_iban(v)
+        return info.value if info else v
     return v
 
 
@@ -97,7 +100,7 @@ def truth_of(gt: dict) -> dict:
         "transfer_type": gt.get("transfer_type"),
         "document_status": gt.get("document_status"),
         **{f"{side}_{k}": _party_value((gt.get(side) or {}).get(k), k)
-           for side in ("sender", "receiver") for k in ("name", "card", "account", "bank")},
+           for side in ("sender", "receiver") for k in ("name", "card", "account", "iban", "bank")},
     }
 
 

@@ -80,6 +80,7 @@ class ReceiptReader:
         cands: list[Candidate] = [c for o in outputs for c in o.candidates]
         hints = Hints(transfer_votes={}, status_votes={})
         for o in outputs:
+            hints.issuer_banks |= set(getattr(o, "issuer_banks", set()) or set())
             for k, v in o.transfer_votes.items():
                 hints.transfer_votes[k] = hints.transfer_votes.get(k, 0) + v
             for k, v in o.status_votes.items():

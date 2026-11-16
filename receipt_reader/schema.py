@@ -125,6 +125,8 @@ class Fields(BaseModel):
     sender: Party = Field(default_factory=Party, description="Payer side (از حساب / مبدا / برداشت از …).")
     receiver: Party = Field(default_factory=Party, description="Payee side (به حساب / مقصد / ذینفع / دارنده کارت …).")
     amount_words: TextField = Field(default_factory=TextField, description="Amount written in words, as read.")
+    purpose: TextField = Field(default_factory=TextField,
+                               description="Purpose / description of the transfer as printed (بابت / توضیحات).")
 
 
 class ExpectedLine(BaseModel):

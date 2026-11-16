@@ -9,6 +9,7 @@ import re
 import threading
 
 from ..config import Settings
+from ..glyphs import resolved_text
 from ..imaging import LoadedImage, Prepared
 from ..normalize import to_ascii_digits
 from ..textparse import TextLine, parse_lines
@@ -67,6 +68,11 @@ class EasyOCREngine(Engine):
         for box, text, conf in res:
             xs = [p[0] for p in box]
             ys = [p[1] for p in box]
+            if self.s.easyocr_ambiguous_five:
+                # Measured on real receipts: EasyOCR's 'fa' model outputs Arabic «٥» both for a
+                # real 5 and for the round Persian zero «۰». Decide from the glyph's height
+                # (glyphs.py); whatever cannot be decided becomes «?» and is never parsed.
+                text = resolved_text(img, [min(xs), min(ys), max(xs), max(ys)], text)
             items.append((min(xs), min(ys), max(xs), max(ys), text, conf * 100))
         items.sort(key=lambda t: (t[1] + t[3]) / 2)
         lines: list[list] = []
@@ -85,11 +91,6 @@ class EasyOCREngine(Engine):
             bbox = [int(x0 / scale) + offset[0], int(y0 / scale) + offset[1],
                     int((x1 - x0) / scale), int((y1 - y0) / scale)]
             text = _join_rtl([g[4] for g in group])
-            if self.s.easyocr_ambiguous_five:
-                # Measured on real Pasargad-app screenshots: EasyOCR's 'fa' model outputs Arabic «٥»
-                # both for a real 5 and for the circle-shaped Persian zero «۰». Mark it unreadable
-                # instead of guessing; numbers containing it are then not parsed at all.
-                text = text.replace("٥", "?")
             out.append(TextLine(text=text, bbox=bbox, conf=conf,
                                 source=src_for(conf, bbox), pass_id=pass_id))
         return out
@@ -111,6 +112,7 @@ class EasyOCREngine(Engine):
         out.debug["full_text"] = hints.full_text
         out.transfer_votes = hints.transfer_votes
         out.status_votes = hints.status_votes
+        out.issuer_banks = set(hints.issuer_banks)
         if prep.strip_gray is not None and prep.strip_box is not None:
             sl = self._lines(prep.strip_gray, "strip", lambda c, b: "printed",
                              offset=prep.strip_origin or tuple(prep.strip_box[:2]), scale=2.0)
